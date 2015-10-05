@@ -1,0 +1,135 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WPKit 1.0\n"
+"POT-Creation-Date: 2014-11-03 15:36+0100\n"
+"PO-Revision-Date: 2014-11-03 15:36+0100\n"
+"Last-Translator: \n"
+"Language-Team: Pingbull <alex@pingbull.no>\n"
+"Language: nb_NO\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.6.5\n"
+"X-Poedit-Basepath: /Users/Shtrih/Sites/wordpress/WPKit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_x\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: Fields/Map.php:361
+msgid "Latitude"
+msgstr ""
+
+#: Fields/Map.php:364
+msgid "Longitude"
+msgstr ""
+
+#: Fields/Map.php:367
+msgid "Reset"
+msgstr ""
+
+#: PostType/MetaBoxRelatedPosts.php:268
+msgid "No search term specified. Showing recent items."
+msgstr ""
+
+#: PostType/MetaBoxRelatedPosts.php:301
+msgid "Title"
+msgstr ""
+
+#: PostType/MetaBoxRelatedPosts.php:357
+msgid "Delete"
+msgstr ""
+
+#: PostType/MetaBoxRelatedPosts.php:601
+msgid "Are u sure?"
+msgstr ""
+
+#: PostType/MetaBoxRepeatable.php:150
+msgid "Are you sure you want to do this?"
+msgstr ""
+
+#: PostType/PostType.php:90
+msgid "Add New"
+msgstr "Legg til nytt"
+
+#: PostType/PostType.php:91 Taxonomy/Taxonomy.php:99
+#, php-format
+msgid "Add New %s"
+msgstr "Legg til nytt %s"
+
+#: PostType/PostType.php:92 Taxonomy/Taxonomy.php:97
+#, php-format
+msgid "Edit %s"
+msgstr "Rediger %s"
+
+#: PostType/PostType.php:93
+#, php-format
+msgid "New %s"
+msgstr "Nytt %s"
+
+#: PostType/PostType.php:94 Taxonomy/Taxonomy.php:94
+#, php-format
+msgid "All %s"
+msgstr "Alle %s"
+
+#: PostType/PostType.php:95
+#, php-format
+msgid "View %s"
+msgstr "Vis %s"
+
+#: PostType/PostType.php:96 Taxonomy/Taxonomy.php:92
+#, php-format
+msgid "Search %s"
+msgstr "Søk i %s"
+
+#: PostType/PostType.php:97 Taxonomy/Taxonomy.php:104
+#, php-format
+msgid "No %s found"
+msgstr "Ingen %s funnet"
+
+#: PostType/PostType.php:98
+#, php-format
+msgid "No %s found in Trash"
+msgstr "Ingen %s funnet i papirkurven"
+
+#: Table/Table.php:196
+msgid "Search"
+msgstr "Søk"
+
+#: Table/WpListTable.php:169
+msgid "Bulk Actions"
+msgstr ""
+
+#: Table/WpListTable.php:179
+msgid "Apply"
+msgstr ""
+
+#: Taxonomy/Taxonomy.php:93
+#, php-format
+msgid "Popular %s"
+msgstr ""
+
+#: Taxonomy/Taxonomy.php:98
+#, php-format
+msgid "Update %s"
+msgstr ""
+
+#: Taxonomy/Taxonomy.php:100
+#, php-format
+msgid "New %s Name"
+msgstr ""
+
+#: Taxonomy/Taxonomy.php:101
+#, php-format
+msgid "Separate %s with commas"
+msgstr ""
+
+#: Taxonomy/Taxonomy.php:102
+#, php-format
+msgid "Add or remove %s"
+msgstr ""
+
+#: Taxonomy/Taxonomy.php:103
+#, php-format
+msgid "Choose from the most used %s"
+msgstr ""
