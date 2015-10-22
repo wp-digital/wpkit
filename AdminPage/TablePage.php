@@ -51,6 +51,9 @@ class TablePage extends AbstractPage
         echo "<h2>{$this->_title}</h2>";
         echo '<form method="get" action="">';
         echo "<input type='hidden' name='page' value='{$this->get_key()}' />";
+        if(isset($_GET['post_type'])) {
+            echo "<input type='hidden' name='post_type' value='{$_GET['post_type']}' />";
+        }
         $this->_table->render();
         echo '</form>';
         echo '</div>';
