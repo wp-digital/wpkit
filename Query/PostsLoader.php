@@ -36,9 +36,6 @@ class PostsLoader
 
     public function __construct( $post_types, $limit )
     {
-        if( null == $post_types ) {
-            $post_types = 'all';
-        }
         $this->_post_types = is_array( $post_types ) ? $post_types : [ $post_types ];
         $this->_limit = absint( $limit );
     }
