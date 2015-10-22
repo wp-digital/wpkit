@@ -100,7 +100,9 @@ class PostsLoader
         $this->_cache_expire = 0;
     }
 
-
+    /**
+     * @return WP_Query
+     */
     public function get_query()
     {
 
@@ -132,7 +134,7 @@ class PostsLoader
         $query = new WP_Query( $args );
 
         if( 0 < count( $posts_not_found ) ) {
-            // create create objects for not found posts
+            // create empty objects for not found posts
 
             $no_found_count = count( $posts_not_found );
 
@@ -232,13 +234,12 @@ class PostsLoader
                 else {
                     $count_of_default_post_type++;
                 }
-
             }
 
         }
 
         // load posts ids
-        $pots_ids_per_type = [];
+        $posts_ids_per_type = [];
 
         // extra post types
         foreach( $count_per_sticky_post_type as $post_type => $count ) {
@@ -257,7 +258,7 @@ class PostsLoader
                 'has_password'          => false,
             ];
 
-            $pots_ids_per_type[ $post_type ] = get_posts( $args );
+            $posts_ids_per_type[ $post_type ] = get_posts( $args );
         }
 
         // default post types
@@ -273,12 +274,11 @@ class PostsLoader
             'has_password'          => false,
         ];
 
-        $pots_ids_per_type['__default'] = get_posts( $args );
-
+        $posts_ids_per_type['__default'] = get_posts( $args );
 
         // paranoid
-        foreach( $pots_ids_per_type as $key => $_ ) {
-            @reset( $pots_ids_per_type[ $key ] );
+        foreach( $posts_ids_per_type as $key => $_ ) {
+            @reset( $posts_ids_per_type[ $key ] );
         }
 
         $ordered_ids = [];
@@ -295,27 +295,24 @@ class PostsLoader
 
                 $post_type = $this->_sticky_post_types[ $index ];
 
-                if( isset( $pots_ids_per_type[ $post_type ] ) && $id = current( $pots_ids_per_type[ $post_type ] ) ) {
+                if( isset( $posts_ids_per_type[ $post_type ] ) && $id = current( $posts_ids_per_type[ $post_type ] ) ) {
                     $ordered_ids[] = $id;
-                    @next( $pots_ids_per_type[ $post_type ] );
+                    @next( $posts_ids_per_type[ $post_type ] );
                 }
                 else {
                     $posts_not_found[] = $index;
                 }
-
             }
             else {
                 // nothing
 
-
-                if( $id = current( $pots_ids_per_type['__default'] ) ) {
+                if( $id = current( $posts_ids_per_type['__default'] ) ) {
                     $ordered_ids[] = $id;
-                    @next( $pots_ids_per_type[ '__default' ] );
+                    @next( $posts_ids_per_type['__default'] );
                 }
                 else {
                     $posts_not_found[] = $index;
                 }
-
             }
 
         }
