@@ -241,6 +241,8 @@ class PostsLoader
         // load posts ids
         $posts_ids_per_type = [];
 
+        $sticky_posts_count = count( $sticky_posts );
+
         // extra post types
         foreach( $count_per_sticky_post_type as $post_type => $count ) {
 
@@ -250,15 +252,15 @@ class PostsLoader
                 'fields'                => 'ids',
                 'post_status'           => 'publish',
                 'post_type'             => $post_type,
-                'posts_per_page'        => $count,
+                'posts_per_page'        => $count + $sticky_posts_count,
                 'offset'                => $offset,
-                'post__not_in'          => $sticky_posts, // todo: replace post__not_in for better performance
                 'ignore_sticky_posts'   => true,
                 'no_found_rows'         => true,
                 'has_password'          => false,
             ];
 
-            $posts_ids_per_type[ $post_type ] = get_posts( $args );
+            $ids = get_posts( $args );
+            $posts_ids_per_type[ $post_type ] = array_slice( $this->_array_diff( $ids, $sticky_posts ), 0, $count ); // faster than post__not_in
         }
 
         // default post types
@@ -266,15 +268,15 @@ class PostsLoader
             'fields'                => 'ids',
             'post_status'           => 'publish',
             'post_type'             => $this->_post_types,
-            'posts_per_page'        => $count_of_default_post_type,
+            'posts_per_page'        => $count_of_default_post_type + $sticky_posts_count,
             'offset'                => $offset_of_default_post_type,
-            'post__not_in'          => $sticky_posts, // todo: replace post__not_in for better performance
             'ignore_sticky_posts'   => true,
             'no_found_rows'         => true,
             'has_password'          => false,
         ];
 
-        $posts_ids_per_type['__default'] = get_posts( $args );
+        $ids = get_posts( $args );
+        $posts_ids_per_type['__default'] = array_slice( $this->_array_diff( $ids, $sticky_posts ), 0, $count_of_default_post_type ); // faster than post__not_in
 
         // paranoid
         foreach( $posts_ids_per_type as $key => $_ ) {
@@ -351,6 +353,18 @@ class PostsLoader
             $this->_empty_post_object = new WP_Post( (object) $vars );
         }
         return $this->_empty_post_object;
+    }
+
+    /**
+     * Fast array_diff implementation
+     *
+     * @param array $array1
+     * @param array $array2
+     * @return array
+     */
+    protected function _array_diff( array $array1, array $array2 )
+    {
+        return array_keys( array_diff_key( array_flip( $array1 ), array_flip( $array2 ) ) );
     }
 
 
