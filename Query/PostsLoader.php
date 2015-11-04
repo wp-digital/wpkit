@@ -173,7 +173,7 @@ class PostsLoader
                 'post_status'           => 'publish',
                 'post_type'             => 'any',
                 'posts_per_page'        => -1,
-                'orderby'               => 'ID',
+                'orderby'               => 'none',
                 'ignore_sticky_posts'   => true,
                 'no_found_rows'         => true,
                 'has_password'          => false,
@@ -193,7 +193,6 @@ class PostsLoader
 
         $count_per_sticky_post_type = [];
         $count_of_default_post_type = 0;
-        $count_of_sticky_posts = 0;
 
         $offset_per_sticky_post_type = [];
         $offset_of_default_post_type = 0;
@@ -203,7 +202,6 @@ class PostsLoader
             if( isset( $this->_sticky_posts[ $index ] ) ) { // sticky posts have top priority
                 // this index has sticky post
 
-                $count_of_sticky_posts ++;
             }
             elseif( isset( $this->_sticky_post_types[ $index ] ) ) {
                 // this index has sticky post type
