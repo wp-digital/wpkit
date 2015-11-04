@@ -1,0 +1,27 @@
+{
+    "name": "REDINKno/wpkit",
+    "description": "Object-oriented development framework for WordPress",
+    "version": "1.5.67",
+    "license": "GPL-2.0+",
+    "keywords": ["wordpress", "wpkit"],
+    "authors": [
+        {
+            "name": "Oleksandr Strikha",
+            "email": "alex@pingbull.no"
+        },
+        {
+            "name": "Vitaly Nikolaev",
+            "email": "vitaly@pingbull.no"
+        },
+        {
+            "name": "Viktor Kuliebiakin",
+            "email": "victor@pingbull.no"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "autoload": {
+        "psr-4": {"WPKit\\": ""}
+    }
+}

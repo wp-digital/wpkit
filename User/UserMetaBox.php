@@ -8,7 +8,7 @@
  * @link https://github.com/REDINKno/wpkit for the canonical source repository
  * @copyright Copyright (c) 2015, Redink AS
  * @license http://www.opensource.org/licenses/gpl-license.php GPL v2.0 (or later)
- * @author Vitaly Nikolaev <vitaly@pingbull.no
+ * @author Vitaly Nikolaev <vitaly@pingbull.no>
  * @author Viktor Kuliebiakin <victor@pingbull.no>
  *
  */
