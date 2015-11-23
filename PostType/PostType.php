@@ -30,6 +30,7 @@ class PostType
 	protected $_type = 'post';
 	protected $_icon = null;
 	protected $_show_in_nav_menus = true;
+    protected $_show_in_menu = null;
 	protected $_publicly_queryable = true;
 	protected $_exclude_from_search = false;
 	protected $_capabilities = [];
@@ -100,6 +101,7 @@ class PostType
 			'supports'            => $this->_supports,
 			'menu_icon'           => $this->_icon,
 			'show_in_nav_menus'   => $this->_show_in_nav_menus,
+            'show_in_menu'        => $this->_show_in_menu,
 			'publicly_queryable'  => $this->_publicly_queryable,
 			'exclude_from_search' => $this->_exclude_from_search,
 			'capabilities'        => $this->_capabilities,
@@ -295,6 +297,11 @@ class PostType
 	{
 		$this->_show_in_nav_menus = (bool) $is_show_in_nav_menus;
 	}
+
+    public function set_show_in_menu($is_show_in_menu)
+    {
+        $this->_show_in_menu = (bool) $is_show_in_menu;
+    }
 
 	public function set_publicly_queryable($is_publicly_queryable)
 	{
