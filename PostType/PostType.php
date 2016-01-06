@@ -246,13 +246,13 @@ class PostType
 	}
 
 	/**
-     * Set is post type has archive
-     *
-	 * @param bool $is_use_archive
+	 * Set is post type has archive
+	 *
+	 * @param bool|string $is_use_archive
 	 */
 	public function set_use_archive($is_use_archive)
 	{
-		$this->_has_archive = (bool) $is_use_archive;
+		$this->_has_archive = $is_use_archive;
 	}
 
     /**
