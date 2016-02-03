@@ -1,9 +1,7 @@
 <?php
 
 /**
- * Video field. Now supports only Youtube
- *
- * @use       Integrations\Youtube
+ * Video field. Supports all oEmbeds from WordPress
  *
  * @package   WPKit
  *
@@ -16,19 +14,16 @@
 
 namespace WPKit\Fields;
 
-use WPKit\Integrations\Youtube;
-
 class Video extends AbstractField {
 	protected $_type = 'video';
 
-	/* @var Youtube $_video */
 	protected $_video = null;
 
 	protected $_classes = ['large-text'];
 
 	public function __construct()
 	{
-		$this->set_description('Add video url like: <span style="font-family: monospace;white-space: pre;">http://youtube.com/watch?v=8Vc-69M-UWk</span> <br>Supported services: YouTube');
+		$this->set_description('Add video url like: <span style="font-family: monospace;white-space: pre;">http://www.youtube.com/watch?v=iwGFalTRHDA</span>');
 	}
 
 	/**
@@ -54,9 +49,14 @@ class Video extends AbstractField {
 	 */
 	public function render_field()
 	{
-		$this->_video = new Youtube();
-		$this->_video->set_url($this->get_value());
-
+		if($this->get_value()){
+			require_once( ABSPATH . WPINC . '/class-oembed.php' );
+			/* @var \WP_oEmbed $oembed */
+			$oembed = _wp_oembed_get_object();
+			$provider = $oembed->get_provider( $this->get_value() );
+			$data = $oembed->fetch($provider,$this->get_value());
+			$this->_video = $data;
+		}
 		return sprintf(
 			'<input type="text" name="%s" id="%s" class="video_field %s" value="%s" placeholder="%s" %s />
 			 %s<div class="video_info">%s</div>',
@@ -85,38 +85,33 @@ class Video extends AbstractField {
 
 	private function _get_video_info()
 	{
-		$info = $this->_video->get_info();
-		if ( !empty($this->_value) && empty($info)) {
+		if(!$this->get_value()){
+			return '';
+		}
+		if (!$this->_video) {
 			return 'Wrong url entered';
 		}
-		if ( !is_array($info)) {
-			return $info;
-		}
 		add_thickbox();
-
+		preg_match('/src="([^"]+)"/', $this->_video->html, $match);
 		return sprintf('
 			<dl>
 				<dt>Title:</dt>
 			   		<dd>%s</dd>
-			   	<dt>Description:</dt>
-			   		<dd>%s</dd>
 			   	<dt>Preview:</dt>
 					<dd>
-						<a href="%s&TB_iframe=true&width=600&height=550" class="thickbox">
-							<img src="%s" alt="%s">
+						<a href="%s&TB_iframe=true&width=%d&height=%d" class="thickbox">
+							<img src="%s" alt="%s" style="max-width: 150px;">
 						</a>
 					</dd>
-				<dt>Duration:</dt>
-			   		<dd>%s</dd>
 			</dl>
 
 			',
-			$this->_video->get_title(),
-			wp_trim_words($this->_video->get_description()),
-			$this->_video->get_preview(),
-			$this->_video->get_thumbnail(),
-			$this->_video->get_title(),
-			gmdate("H:i:s", $this->_video->get_duration())
+			$this->_video->title,
+			$match[1],
+			$this->_video->width,
+			$this->_video->height,
+			$this->_video->thumbnail_url,
+			$this->_video->title
 		);
 	}
 }
