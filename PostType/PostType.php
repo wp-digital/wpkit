@@ -27,6 +27,7 @@ class PostType
 	protected $_has_archive = false;
 	protected $_hierarchical = true;
 	protected $_rewrite = [];
+	protected $_public = true;
 	protected $_type = 'post';
 	protected $_icon = null;
 	protected $_show_in_nav_menus = true;
@@ -92,7 +93,7 @@ class PostType
 
 		register_post_type($this->_key, [
 			'labels'              => $this->_get_labels(),
-			'public'              => true,
+			'public'              => $this->_public,
 			'rewrite'             => $this->get_rewrite(),
 			'capability_type'     => $this->_type,
 			'has_archive'         => $this->_has_archive,
@@ -235,6 +236,26 @@ class PostType
 		$this->_menu_position = (int) $position;
 	}
 
+	/**
+	 * Get is post type public
+	 *
+	 * @return bool
+	 */
+	public function is_public()
+	{
+		return $this->_public;
+	}
+
+	/**
+	 * Set post type public
+	 *
+	 * @param bool $is_public
+	 */
+	public function set_public($is_public)
+	{
+		$this->_public = $is_public;
+	}
+
     /**
      * Get is post type has archive
      *
@@ -246,9 +267,9 @@ class PostType
 	}
 
 	/**
-     * Set is post type has archive
-     *
-	 * @param bool $is_use_archive
+	 * Set is post type has archive
+	 *
+	 * @param bool|string $is_use_archive
 	 */
 	public function set_use_archive($is_use_archive)
 	{
