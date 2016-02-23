@@ -14,7 +14,7 @@
 
 namespace WPKit\Module;
 
-use WPKit\Helpers\String;
+use WPKit\Helpers\Strings;
 
 abstract class AbstractAjax
 {
@@ -37,8 +37,8 @@ abstract class AbstractAjax
     {
         foreach(get_class_methods($this) as $method) {
 
-            if(String::position($method, 'action_') === 0) {
-                $action = String::sub_string($method, 7);
+            if(Strings::position($method, 'action_') === 0) {
+                $action = Strings::sub_string($method, 7);
                 add_action('wp_ajax_'. $this->get_prefix() . '_' . $action, [$this, $method]);
                 add_action('wp_ajax_nopriv_'. $this->get_prefix() . '_' . $action, [$this, $method]);
             }

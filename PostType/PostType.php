@@ -14,7 +14,7 @@
 
 namespace WPKit\PostType;
 
-use WPKit\Helpers\String;
+use WPKit\Helpers\Strings;
 use WPKit\Exception\WpException;
 use WPKit\Taxonomy\Taxonomy;
 
@@ -113,10 +113,10 @@ class PostType
 
 	protected function _get_labels()
 	{
-		$singular_name           = String::capitalize($this->_name);
-		$plural_name             = $this->_pluralize ? String::pluralize($singular_name) : $singular_name;
-		$lowercase_singular_name = String::lowercase($singular_name);
-		$lowercase_plural_name   = String::lowercase($plural_name);
+		$singular_name           = Strings::capitalize($this->_name);
+		$plural_name             = $this->_pluralize ? Strings::pluralize($singular_name) : $singular_name;
+		$lowercase_singular_name = Strings::lowercase($singular_name);
+		$lowercase_plural_name   = Strings::lowercase($plural_name);
 
         $default_labels = [
             'name'               => $plural_name,
@@ -252,7 +252,7 @@ class PostType
 	 */
 	public function set_use_archive($is_use_archive)
 	{
-		$this->_has_archive = (bool) $is_use_archive;
+		$this->_has_archive = $is_use_archive;
 	}
 
     /**

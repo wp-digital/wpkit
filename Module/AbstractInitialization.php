@@ -15,7 +15,7 @@
 
 namespace WPKit\Module;
 
-use WPKit\Helpers\String;
+use WPKit\Helpers\Strings;
 
 abstract class AbstractInitialization
 {
@@ -31,7 +31,7 @@ abstract class AbstractInitialization
     private function _execute_register_methods()
     {
         foreach(get_class_methods($this) as $method) {
-            if(String::position($method, 'register_') === 0 || (is_admin() && String::position($method, 'admin_register_') === 0)) {
+            if(Strings::position($method, 'register_') === 0 || (is_admin() && Strings::position($method, 'admin_register_') === 0)) {
                 call_user_func([$this, $method]);
             }
         }
@@ -41,7 +41,7 @@ abstract class AbstractInitialization
 	private function _execute_add_action_methods()
 	{
 		foreach (get_class_methods($this) as $method) {
-			if (String::position($method, 'add_action_') === 0 || String::position($method, 'add_filter_') === 0) {
+			if (Strings::position($method, 'add_action_') === 0 || Strings::position($method, 'add_filter_') === 0) {
 				$action_name = str_replace(['add_filter_','add_action_'], '', $method);
 				$reflection = new \ReflectionMethod($this, $method);
 				$params_count = $reflection->getNumberOfParameters();
