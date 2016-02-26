@@ -224,7 +224,8 @@ class TaxonomyField
         $taxonomy_meta = TaxonomyMeta::get_instance();
 
         if ( !$this->get_field()->is_disabled() ) {
-            $this->get_field()->set_value( $_POST[ $this->get_key() ] );
+            $value = isset( $_POST[ $this->get_key() ] ) ? $_POST[ $this->get_key() ] : false;
+            $this->get_field()->set_value( $value );
             $value = $this->get_field()->get_value();
 
             if($value) {

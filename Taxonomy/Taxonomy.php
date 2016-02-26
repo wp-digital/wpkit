@@ -16,7 +16,7 @@ namespace WPKit\Taxonomy;
 
 use WPKit\PostType\PostType;
 use WPKit\Exception\WpException;
-use WPKit\Helpers\String;
+use WPKit\Helpers\Strings;
 use WPKit\Fields\AbstractField;
 
 class Taxonomy
@@ -118,9 +118,9 @@ class Taxonomy
 
     protected function _get_labels()
     {
-        $singular_name = String::capitalize($this->_name);
-        $plural_name = $this->_pluralize ? String::pluralize($singular_name) : $singular_name;
-        $lowercase_plural_name = String::lowercase($plural_name);
+        $singular_name = Strings::capitalize($this->_name);
+        $plural_name = $this->_pluralize ? Strings::pluralize($singular_name) : $singular_name;
+        $lowercase_plural_name = Strings::lowercase($plural_name);
 
         return wp_parse_args($this->_custom_labels, [
             'name'                       => $plural_name,

@@ -14,7 +14,7 @@
 
 namespace WPKit\PostType;
 
-use WPKit\Helpers\String;
+use WPKit\Helpers\Strings;
 use WPKit\Exception\WpException;
 use WPKit\Taxonomy\Taxonomy;
 
@@ -27,9 +27,11 @@ class PostType
 	protected $_has_archive = false;
 	protected $_hierarchical = true;
 	protected $_rewrite = [];
+	protected $_public = true;
 	protected $_type = 'post';
 	protected $_icon = null;
 	protected $_show_in_nav_menus = true;
+    protected $_show_in_menu = null;
 	protected $_publicly_queryable = true;
 	protected $_exclude_from_search = false;
 	protected $_capabilities = [];
@@ -91,7 +93,7 @@ class PostType
 
 		register_post_type($this->_key, [
 			'labels'              => $this->_get_labels(),
-			'public'              => true,
+			'public'              => $this->_public,
 			'rewrite'             => $this->get_rewrite(),
 			'capability_type'     => $this->_type,
 			'has_archive'         => $this->_has_archive,
@@ -100,6 +102,7 @@ class PostType
 			'supports'            => $this->_supports,
 			'menu_icon'           => $this->_icon,
 			'show_in_nav_menus'   => $this->_show_in_nav_menus,
+            'show_in_menu'        => $this->_show_in_menu,
 			'publicly_queryable'  => $this->_publicly_queryable,
 			'exclude_from_search' => $this->_exclude_from_search,
 			'capabilities'        => $this->_capabilities,
@@ -111,10 +114,10 @@ class PostType
 
 	protected function _get_labels()
 	{
-		$singular_name           = String::capitalize($this->_name);
-		$plural_name             = $this->_pluralize ? String::pluralize($singular_name) : $singular_name;
-		$lowercase_singular_name = String::lowercase($singular_name);
-		$lowercase_plural_name   = String::lowercase($plural_name);
+		$singular_name           = Strings::capitalize($this->_name);
+		$plural_name             = $this->_pluralize ? Strings::pluralize($singular_name) : $singular_name;
+		$lowercase_singular_name = Strings::lowercase($singular_name);
+		$lowercase_plural_name   = Strings::lowercase($plural_name);
 
         $default_labels = [
             'name'               => $plural_name,
@@ -233,6 +236,26 @@ class PostType
 		$this->_menu_position = (int) $position;
 	}
 
+	/**
+	 * Get is post type public
+	 *
+	 * @return bool
+	 */
+	public function is_public()
+	{
+		return $this->_public;
+	}
+
+	/**
+	 * Set post type public
+	 *
+	 * @param bool $is_public
+	 */
+	public function set_public($is_public)
+	{
+		$this->_public = $is_public;
+	}
+
     /**
      * Get is post type has archive
      *
@@ -244,13 +267,13 @@ class PostType
 	}
 
 	/**
-     * Set is post type has archive
-     *
-	 * @param bool $is_use_archive
+	 * Set is post type has archive
+	 *
+	 * @param bool|string $is_use_archive
 	 */
 	public function set_use_archive($is_use_archive)
 	{
-		$this->_has_archive = (bool) $is_use_archive;
+		$this->_has_archive = $is_use_archive;
 	}
 
     /**
@@ -295,6 +318,11 @@ class PostType
 	{
 		$this->_show_in_nav_menus = (bool) $is_show_in_nav_menus;
 	}
+
+    public function set_show_in_menu($is_show_in_menu)
+    {
+        $this->_show_in_menu = (bool) $is_show_in_menu;
+    }
 
 	public function set_publicly_queryable($is_publicly_queryable)
 	{

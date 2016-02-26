@@ -22,6 +22,7 @@ class MetaBoxRelatedPosts extends MetaBox
 {
 	protected $_hidden_field_key = 'posts';
 	protected $_posts_per_page = 10;
+	protected $_limit = 0;
 	protected $_related_post_types = ['post', 'page'];
 	protected $_classes = ['large-text'];
 	protected $_attributes = ['autocomplete' => 'off'];
@@ -58,11 +59,25 @@ class MetaBoxRelatedPosts extends MetaBox
 	}
 
 	/**
-	 * @param $related_post_types
+	 * @param array $related_post_types
 	 */
 	public function set_related_post_types( $related_post_types )
 	{
 		$this->_related_post_types = (array) $related_post_types;
+	}
+
+	/**
+	 * @param integer $limit Limit of items to add
+	 */
+	public function set_items_limit($limit){
+		$this->_limit = (int) $limit;
+	}
+
+	/**
+	 * @return int Limit of posts
+	 */
+	private function _get_items_limit(){
+		return $this->_limit;
 	}
 
 	/**
@@ -301,6 +316,9 @@ class MetaBoxRelatedPosts extends MetaBox
 		ob_start();
 		?>
 		<br />
+		<?php if($this->_get_items_limit()): ?>
+		<div class="description"><?php _e( 'Limit' ) ?>: <?= $this->_get_items_limit() ?></div>
+		<?php endif; ?>
 		<table id="<?= $this->get_field_key() ?>-table" class="wpkit-table wp-list-table widefat tags">
 			<thead>
 				<tr>
@@ -456,7 +474,8 @@ class MetaBoxRelatedPosts extends MetaBox
 					selector: '<?= $this->get_field_key() ?>',
 					perPage: <?= $this->_get_posts_per_page() ?>,
 					postNotIn: <?= $post_id ?>,
-					postType: '<?= implode( ',', $this->_get_related_post_types() ) ?>'
+					postType: '<?= implode( ',', $this->_get_related_post_types() ) ?>',
+					limit: <?= $this->_get_items_limit() ?>
 				});
 			});
 
@@ -491,6 +510,7 @@ class MetaBoxRelatedPosts extends MetaBox
 						this.perPage = field.perPage;
 						this.postNotIn = field.postNotIn;
 						this.postType = field.postType;
+						this.limit = field.limit;
 						this.$searchField = $('#' + field.selector + '-search-field');
 						this.$searchList = $('#' + field.selector + '-search-list');
 						this.$recentList = $('#' + field.selector + '-recent-list');
@@ -585,6 +605,10 @@ class MetaBoxRelatedPosts extends MetaBox
 
 						this.$searchList.add(this.$recentList).on('click', 'li', (function (self) {
 							return function () {
+								if(self.limit > 0 && self.limit <= self.$table.find('tbody tr').length){
+									alert('You have reached the limit: '+self.limit);
+									return;
+								}
 								var data = {
 									id: $(this).data('id'),
 									title: $(this).find('.item-title').text(),

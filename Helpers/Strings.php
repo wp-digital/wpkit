@@ -14,7 +14,7 @@
 
 namespace WPKit\Helpers;
 
-class String {
+class Strings {
 
     /**
      * Pluralize word
