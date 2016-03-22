@@ -319,9 +319,14 @@ class PostType
 		$this->_show_in_nav_menus = (bool) $is_show_in_nav_menus;
 	}
 
-    public function set_show_in_menu($is_show_in_menu)
+	/**
+	 * Set is post type is visible in admin menu or change its placement
+	 * 
+	 * @param string|bool $show_in_menu
+	 */
+    public function set_show_in_menu($show_in_menu)
     {
-        $this->_show_in_menu = (bool) $is_show_in_menu;
+        $this->_show_in_menu = $show_in_menu;
     }
 
 	public function set_publicly_queryable($is_publicly_queryable)
