@@ -409,7 +409,8 @@ class MetaBoxRelatedPosts extends MetaBox
 	protected function _get_posts( $args = [] )
 	{
 		$posts = '';
-
+		global $post;
+		$native_post = $post;
 		$the_query = new WP_Query( wp_parse_args( $args, [
 			'posts_per_page' => $this->_get_posts_per_page(),
 		    'post_type'      => $this->_get_related_post_types()
@@ -423,6 +424,7 @@ class MetaBoxRelatedPosts extends MetaBox
 		}
 
 		unset( $the_query );
+		$post = $native_post;
 		wp_reset_postdata();
 
 		return $posts;
