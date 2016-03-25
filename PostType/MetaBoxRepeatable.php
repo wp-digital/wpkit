@@ -22,11 +22,14 @@ class MetaBoxRepeatable extends MetaBox
 {
     protected $_limit = null;
 
+    protected $_vertical = false;
+
     protected function _render($post)
     {
         wp_nonce_field($this->get_key() . "_inner_custom_box", $this->get_key() . "_inner_custom_box_nonce");
+        $table_class = $this->_vertical ? ' vertical': "";
         ?>
-        <table class="wp-list-table widefat tags">
+        <table class="wp-list-table widefat tags<?= $table_class ?>">
             <thead>
                 <tr>
                     <th class="check-column" scope="col"></th>
@@ -71,7 +74,8 @@ class MetaBoxRepeatable extends MetaBox
         $_field = clone $field;
         $_field->set_value($value);
         $_field->set_name( $field->get_name() . "[$index]" , false );
-        return '<td>' . $_field->render_field() . '</td>';
+
+        return '<td>' . $_field->render_label() . $_field->render_field() . '</td>';
     }
 
     protected function _render_row($index, $post)
@@ -83,7 +87,7 @@ class MetaBoxRepeatable extends MetaBox
             $value = $this->_get_field_value($field, $post, $index);
             $html .= $this->_render_field($index, $field, $value);
         }
-        $html .= '<td class="plugins"><a href="#" class="delete hide-if-no-js dashicons-before dashicons-no-alt" title="Delete"></a></td>';
+        $html .= '<th class="plugins"><a href="#" class="delete hide-if-no-js dashicons-before dashicons-no-alt" title="Delete"></a></th>';
         $html .= '</tr>';
         return $html;
     }
@@ -154,7 +158,7 @@ class MetaBoxRepeatable extends MetaBox
                     if( limit == 0 || limit > rows_count ) {
                         $table.find('tbody').append(html.replace(/__i__/g, rows_count));
                         refreshGrid();
-                        jQuery(document).trigger('repeatable_row_added');
+                        jQuery(document).trigger('repeatable_row_added', $table.find('tbody tr:last'), rows_count);
                     }
                     else {
                         alert('Reached the maximum number of fields');
@@ -207,6 +211,12 @@ class MetaBoxRepeatable extends MetaBox
         ?>
         <style>
             #<?= $this->get_key() ?> tbody .drag-handle { cursor: row-resize; vertical-align: top }
+            #<?= $this->get_key() ?> tbody th { width: 20px; vertical-align: top }
+            #<?= $this->get_key() ?> tbody label { display: none; }
+            #<?= $this->get_key() ?> tbody input.large-text, #<?= $this->get_key() ?> tbody textarea.large-text{ width: 100%}
+            #<?= $this->get_key() ?> .vertical thead { display: none; }
+            #<?= $this->get_key() ?> .vertical tbody td { display: block; }
+            #<?= $this->get_key() ?> .vertical tbody label { display: inline; }
             #<?= $this->get_key() ?> tbody tr.ui-sortable-helper { background: #E5E5E5; opacity: .8; }
             #<?= $this->get_key() ?> tbody tr.row-placeholder { background-color: #F9F9F9; }
         </style>
@@ -315,6 +325,30 @@ class MetaBoxRepeatable extends MetaBox
     {
         wp_enqueue_script('jquery-effects-highlight');
         parent::_enqueue_javascript();
+        add_action('admin_print_footer_scripts', function () {
+            echo "<script>
+					jQuery(function ($) {
+						'use strict';
+						var reInitEditor = function (id) {
+							tinymce.EditorManager.execCommand('mceRemoveEditor', true, id);
+							tinymce.EditorManager.execCommand('mceAddEditor', true, id);
+						};
+						$(document).on('repeatable_row_added', function (e,el) {
+							reInitEditor($(el).find('.wp-editor-area').attr('id'));
+							if(typeof wp.wpkit != 'undefined'){
+							    if(typeof wp.wpkit.datepicker != 'undefined'){
+                                    wp.wpkit.datepicker.reinit();							
+							    }
+							}
+						});
+						$('#campaign_slider').on('sortstop', function (event, ui) {
+							ui.item.find('.wp-editor-area').each(function () {
+								reInitEditor($(this).attr('id'));
+							});
+						});
+					});
+				</script>";
+        });
     }
 
     /**
@@ -348,5 +382,10 @@ class MetaBoxRepeatable extends MetaBox
     public function remove_limit()
     {
         $this->_limit = null;
+    }
+
+    public function set_vertical($state = true)
+    {
+        $this->_vertical = $state;
     }
 }
