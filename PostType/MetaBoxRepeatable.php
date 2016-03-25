@@ -165,10 +165,10 @@ class MetaBoxRepeatable extends MetaBox
                         jQuery(document).trigger('repeatable_row_limit_reached');
                     }
                 });
-                $repeatableBox.on('click', 'td > .delete', function(e) {
+                $repeatableBox.on('click', '.delete', function(e) {
                     e.preventDefault();
                     if(confirm('<?php _e('Are you sure you want to do this?') ?>')) {
-                        jQuery(this).parent('td').parent('tr').remove();
+                        jQuery(this).parents('tr').remove();
                         refreshGrid();
                         jQuery(document).trigger('repeatable_row_deleted');
                     }
