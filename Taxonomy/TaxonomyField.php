@@ -226,7 +226,7 @@ class TaxonomyField
         if ( !$this->get_field()->is_disabled() ) {
             $value = isset( $_POST[ $this->get_key() ] ) ? $_POST[ $this->get_key() ] : false;
             $this->get_field()->set_value( $value );
-            $value = $this->get_field()->get_value();
+            $value = wp_unslash( $this->get_field()->get_value() );
 
             if($value) {
                 $taxonomy_meta->update($term_id, $this->get_key(), $value);
