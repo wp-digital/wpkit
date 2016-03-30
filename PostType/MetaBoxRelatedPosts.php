@@ -413,7 +413,8 @@ class MetaBoxRelatedPosts extends MetaBox
 		$native_post = $post;
 		$the_query = new WP_Query( wp_parse_args( $args, [
 			'posts_per_page' => $this->_get_posts_per_page(),
-		    'post_type'      => $this->_get_related_post_types()
+		    'post_type'      => $this->_get_related_post_types(),
+			'post_status'    => 'publish',
 		] ) );
 
 		if ( $the_query->have_posts() ) {
