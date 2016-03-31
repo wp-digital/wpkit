@@ -285,13 +285,16 @@ class MetaBoxRelatedPosts extends MetaBox
 	 */
 	protected function _render_recent_list( $post_id )
 	{
+		$posts = $this->get_field_value( $post_id, $this->get_key() );
+		array_push($posts, $post_id);
+
 		return sprintf(
 			'<div id="%s-recent-list" class="wpkit-query-results hide-if-no-js"><div class="query-notice"><em>%s</em></div><ul>%s</ul>%s</div>',
 			$this->get_field_key(),
 			__( 'No search term specified. Showing recent items.', 'wpkit' ),
-			$this->_get_posts( [
-				'post__not_in' => [$post_id]
-			] ),
+			$this->_get_posts([
+				'post__not_in' => $posts,
+			]),
 			$this->_render_spinner()
 		);
 	}
@@ -623,6 +626,8 @@ class MetaBoxRelatedPosts extends MetaBox
 									self.initSortable();
 									self.highlight();
 									self.save();
+									$(this).hide();
+									self.$searchList.trigger('scroll');
 								}
 							};
 						})(this));
@@ -641,6 +646,7 @@ class MetaBoxRelatedPosts extends MetaBox
 
 								if (confirm(msg)) {
 									$(this).parents('tr').remove();
+									self.$searchList.add(self.$recentList).find('[data-id="' + $(this).parents('tr').data('id') + '"]').show();
 									self.highlight();
 									self.save();
 								}
