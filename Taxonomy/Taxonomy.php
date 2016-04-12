@@ -26,6 +26,7 @@ class Taxonomy
     protected $_post_types = [];
     protected $_hierarchical = true;
     protected $_display_in_table = true;
+    protected $_show_ui = true;
 	protected $_show_in_nav_menus = true;
     protected $_capabilities = [];
 	protected $_rewrite = [];
@@ -107,7 +108,7 @@ class Taxonomy
         register_taxonomy($this->_key, $this->_post_types, [
             'hierarchical'          => $this->_hierarchical,
             'labels'                => $this->_get_labels(),
-            'show_ui'               => true,
+            'show_ui'               => $this->_show_ui,
             'show_admin_column'     => $this->_display_in_table,
             'query_var'             => true,
 			'show_in_nav_menus'     => $this->_show_in_nav_menus,
@@ -192,6 +193,16 @@ class Taxonomy
         $this->_hierarchical = (bool) $is_hierarchical;
     }
 
+    public function is_show_ui()
+    {
+        return $this->_show_ui;
+    }
+
+    public function set_show_ui($is_show_ui)
+    {
+        $this->_show_ui = (bool) $is_show_ui;
+    }
+    
 	public function is_show_in_nav_menus()
 	{
 		return $this->_show_in_nav_menus;
