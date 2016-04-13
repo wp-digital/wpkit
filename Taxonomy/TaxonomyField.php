@@ -78,14 +78,21 @@ class TaxonomyField
         add_action("edited_{$this->_taxonomy}", $save_custom_fields_function);
 
         // load assets
-        add_action('admin_print_scripts-edit-tags.php', function() {
-            $this->get_field()->enqueue_javascript();
-        }, 10);
 
-        add_action('admin_print_styles-edit-tags.php', function() {
+        $enqueue_scripts_function = function () {
+            $this->get_field()->enqueue_javascript();
+        };
+
+        add_action('admin_print_scripts-edit-tags.php', $enqueue_scripts_function, 10);
+        add_action('admin_print_scripts-term.php', $enqueue_scripts_function, 10);
+
+        $enqueue_styles_function = function () {
             $this->get_field()->enqueue_style();
             wp_add_inline_style('wp-admin', $this->_style_fix());
-        });
+        };
+
+        add_action('admin_print_styles-edit-tags.php', $enqueue_styles_function);
+        add_action('admin_print_styles-term.php', $enqueue_styles_function);
     }
 
     protected function _get_unique_key($key)
