@@ -285,7 +285,7 @@ class MetaBoxRelatedPosts extends MetaBox
 	 */
 	protected function _render_recent_list( $post_id )
 	{
-		$posts = $this->get_field_value( $post_id, $this->get_key() );
+		$posts = (array) $this->get_field_value( $post_id, $this->get_key() );
 		array_push($posts, $post_id);
 
 		return sprintf(
@@ -523,6 +523,7 @@ class MetaBoxRelatedPosts extends MetaBox
 						this.$table = $('#' + field.selector + '-table');
 						this.$tmpl = $('#' + field.selector + '-tmpl');
 						this.$field = $('#' + field.selector);
+						this.template = _.template(this.$tmpl.html());
 
 						this.initSortable();
 						this.highlight();
@@ -622,7 +623,7 @@ class MetaBoxRelatedPosts extends MetaBox
 								};
 
 								if (data.id && data.title) {
-									self.$table.find('tbody').append(_.template(self.$tmpl.html(), data));
+									self.$table.find('tbody').append(self.template(data));
 									self.initSortable();
 									self.highlight();
 									self.save();
