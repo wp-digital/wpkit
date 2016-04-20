@@ -330,8 +330,10 @@ class MetaBoxRepeatable extends MetaBox
 					jQuery(function ($) {
 						'use strict';
 						var reInitEditor = function (id) {
-							tinymce.EditorManager.execCommand('mceRemoveEditor', true, id);
-							tinymce.EditorManager.execCommand('mceAddEditor', true, id);
+						    if(typeof tinymce != 'undefined'){
+							    tinymce.EditorManager.execCommand('mceRemoveEditor', true, id);
+							    tinymce.EditorManager.execCommand('mceAddEditor', true, id);
+							}
 						};
 						$(document).on('repeatable_row_added', function (e,el) {
 							reInitEditor($(el).find('.wp-editor-area').attr('id'));
