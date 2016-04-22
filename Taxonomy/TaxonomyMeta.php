@@ -138,9 +138,9 @@ class TaxonomyMeta
         if( $this->_is_table_exist() ) {
             $this->_merge_tables();
             $this->_drop_table();
-
-            update_option( $this->_migration_key, 1 );
         }
+
+        update_option( $this->_migration_key, 1 );
     }
 
     /**
