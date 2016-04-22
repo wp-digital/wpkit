@@ -116,7 +116,12 @@ class TaxonomyField
      */
     public static function get($term_id, $key)
     {
-        return TaxonomyMeta::get_instance()->get($term_id, sanitize_key($key));
+        /**
+         * Migrate from custom db table if exists to core due to termmeta support since WordPress 4.4.0
+         */
+        TaxonomyMeta::get_instance();
+
+        return get_term_meta( $term_id, sanitize_key( $key ), true );
     }
 
     /**
@@ -180,8 +185,7 @@ class TaxonomyField
      */
     public function render_edit($term_id)
     {
-        $taxonomy_meta = TaxonomyMeta::get_instance();
-        $this->get_field()->set_value( $taxonomy_meta->get($term_id, $this->get_key()) );
+        $this->get_field()->set_value( static::get( $term_id, $this->get_key() ) );
 
         $html = '<tr class="form-field-fixed">';
         $html .= "<th scope=\"row\">{$this->get_field()->render_label()}</th>";
@@ -228,18 +232,16 @@ class TaxonomyField
 
     protected function _save($term_id)
     {
-        $taxonomy_meta = TaxonomyMeta::get_instance();
-
         if ( !$this->get_field()->is_disabled() ) {
-            $value = isset( $_POST[ $this->get_key() ] ) ? $_POST[ $this->get_key() ] : false;
+            $value = isset( $_POST[ $this->get_key() ] ) ? $_POST[ $this->get_key() ] : null;
             $this->get_field()->set_value( $value );
-            $value = wp_unslash( $this->get_field()->get_value() );
+            $value = $this->get_field()->get_value();
 
-            if($value) {
-                $taxonomy_meta->update($term_id, $this->get_key(), $value);
+            if($value !== '' && $value !== null) {
+                update_term_meta($term_id, $this->get_key(), $value);
             }
             else {
-                $taxonomy_meta->delete($term_id, $this->get_key());
+                delete_term_meta($term_id, $this->get_key());
             }
         }
     }

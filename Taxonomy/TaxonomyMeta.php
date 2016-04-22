@@ -14,11 +14,16 @@
 
 namespace WPKit\Taxonomy;
 
+/**
+ * Class TaxonomyMeta
+ *
+ * @deprecated 
+ * 
+ * @package WPKit\Taxonomy
+ */
 class TaxonomyMeta
 {
     /**
-     * @deprecated
-     *
      * @var string
      */
     protected $_table = 'term_meta';
@@ -34,8 +39,6 @@ class TaxonomyMeta
     protected static $instance = null;
 
     /**
-     * @deprecated
-     *
      * @var \wpdb
      */
     protected $_db;
@@ -121,8 +124,6 @@ class TaxonomyMeta
     }
 
     /**
-     * @deprecated
-     *
      * @return bool
      */
     protected function _is_table_exist()
