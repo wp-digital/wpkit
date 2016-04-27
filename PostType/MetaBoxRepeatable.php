@@ -329,17 +329,32 @@ class MetaBoxRepeatable extends MetaBox
             echo "<script>
 					jQuery(function ($) {
 						'use strict';
+						var get_editor_settings=function(id){
+						    var settings={};
+						    if(typeof tinymce != 'undefined'){
+						        var main_id=id.substring(0,(id.length-1))+'0';
+						        var main_editor=tinyMCE.get(main_id);
+
+						        if(main_editor){
+						            settings=main_editor.settings;
+						            settings.selector='#'+id;
+						            settings.id=id;
+						        }
+						        return settings;
+						    }
+						    return {};
+						};
 						var reInitEditor = function (id) {
 						    if(typeof tinymce != 'undefined'){
 							    tinymce.EditorManager.execCommand('mceRemoveEditor', true, id);
-							    tinymce.EditorManager.execCommand('mceAddEditor', true, id);
+                                tinyMCE.init(get_editor_settings(id));
 							}
 						};
 						$(document).on('repeatable_row_added', function (e,el) {
 							reInitEditor($(el).find('.wp-editor-area').attr('id'));
 							if(typeof wp.wpkit != 'undefined'){
 							    if(typeof wp.wpkit.datepicker != 'undefined'){
-                                    wp.wpkit.datepicker.reinit();							
+                                    wp.wpkit.datepicker.reinit();
 							    }
 							}
 						});
