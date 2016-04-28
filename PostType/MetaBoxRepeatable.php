@@ -345,7 +345,7 @@ class MetaBoxRepeatable extends MetaBox
 						    return {};
 						};
 						var reInitEditor = function (id) {
-						    if(typeof tinymce != 'undefined'){
+						    if(typeof tinymce != 'undefined' && typeof id !== 'undefined'){
 							    tinymce.EditorManager.execCommand('mceRemoveEditor', true, id);
                                 tinyMCE.init(get_editor_settings(id));
 							}
