@@ -22,6 +22,7 @@ class MetaBoxRelatedPosts extends MetaBox
 {
 	protected $_hidden_field_key = 'posts';
 	protected $_posts_per_page = 10;
+	protected $_limit = 0;
 	protected $_related_post_types = ['post', 'page'];
 	protected $_classes = ['large-text'];
 	protected $_attributes = ['autocomplete' => 'off'];
@@ -58,11 +59,25 @@ class MetaBoxRelatedPosts extends MetaBox
 	}
 
 	/**
-	 * @param $related_post_types
+	 * @param array $related_post_types
 	 */
 	public function set_related_post_types( $related_post_types )
 	{
 		$this->_related_post_types = (array) $related_post_types;
+	}
+
+	/**
+	 * @param integer $limit Limit of items to add
+	 */
+	public function set_items_limit($limit){
+		$this->_limit = (int) $limit;
+	}
+
+	/**
+	 * @return int Limit of posts
+	 */
+	private function _get_items_limit(){
+		return $this->_limit;
 	}
 
 	/**
@@ -270,13 +285,16 @@ class MetaBoxRelatedPosts extends MetaBox
 	 */
 	protected function _render_recent_list( $post_id )
 	{
+		$posts = (array) $this->get_field_value( $post_id, $this->get_key() );
+		array_push($posts, $post_id);
+
 		return sprintf(
 			'<div id="%s-recent-list" class="wpkit-query-results hide-if-no-js"><div class="query-notice"><em>%s</em></div><ul>%s</ul>%s</div>',
 			$this->get_field_key(),
 			__( 'No search term specified. Showing recent items.', 'wpkit' ),
-			$this->_get_posts( [
-				'post__not_in' => [$post_id]
-			] ),
+			$this->_get_posts([
+				'post__not_in' => $posts,
+			]),
 			$this->_render_spinner()
 		);
 	}
@@ -301,6 +319,9 @@ class MetaBoxRelatedPosts extends MetaBox
 		ob_start();
 		?>
 		<br />
+		<?php if($this->_get_items_limit()): ?>
+		<div class="description"><?php _e( 'Limit' ) ?>: <?= $this->_get_items_limit() ?></div>
+		<?php endif; ?>
 		<table id="<?= $this->get_field_key() ?>-table" class="wpkit-table wp-list-table widefat tags">
 			<thead>
 				<tr>
@@ -391,10 +412,12 @@ class MetaBoxRelatedPosts extends MetaBox
 	protected function _get_posts( $args = [] )
 	{
 		$posts = '';
-
+		global $post;
+		$native_post = $post;
 		$the_query = new WP_Query( wp_parse_args( $args, [
 			'posts_per_page' => $this->_get_posts_per_page(),
-		    'post_type'      => $this->_get_related_post_types()
+		    'post_type'      => $this->_get_related_post_types(),
+			'post_status'    => 'publish',
 		] ) );
 
 		if ( $the_query->have_posts() ) {
@@ -405,6 +428,7 @@ class MetaBoxRelatedPosts extends MetaBox
 		}
 
 		unset( $the_query );
+		$post = $native_post;
 		wp_reset_postdata();
 
 		return $posts;
@@ -456,7 +480,8 @@ class MetaBoxRelatedPosts extends MetaBox
 					selector: '<?= $this->get_field_key() ?>',
 					perPage: <?= $this->_get_posts_per_page() ?>,
 					postNotIn: <?= $post_id ?>,
-					postType: '<?= implode( ',', $this->_get_related_post_types() ) ?>'
+					postType: '<?= implode( ',', $this->_get_related_post_types() ) ?>',
+					limit: <?= $this->_get_items_limit() ?>
 				});
 			});
 
@@ -491,12 +516,14 @@ class MetaBoxRelatedPosts extends MetaBox
 						this.perPage = field.perPage;
 						this.postNotIn = field.postNotIn;
 						this.postType = field.postType;
+						this.limit = field.limit;
 						this.$searchField = $('#' + field.selector + '-search-field');
 						this.$searchList = $('#' + field.selector + '-search-list');
 						this.$recentList = $('#' + field.selector + '-recent-list');
 						this.$table = $('#' + field.selector + '-table');
 						this.$tmpl = $('#' + field.selector + '-tmpl');
 						this.$field = $('#' + field.selector);
+						this.template = _.template(this.$tmpl.html());
 
 						this.initSortable();
 						this.highlight();
@@ -585,6 +612,10 @@ class MetaBoxRelatedPosts extends MetaBox
 
 						this.$searchList.add(this.$recentList).on('click', 'li', (function (self) {
 							return function () {
+								if(self.limit > 0 && self.limit <= self.$table.find('tbody tr').length){
+									alert('You have reached the limit: '+self.limit);
+									return;
+								}
 								var data = {
 									id: $(this).data('id'),
 									title: $(this).find('.item-title').text(),
@@ -592,10 +623,12 @@ class MetaBoxRelatedPosts extends MetaBox
 								};
 
 								if (data.id && data.title) {
-									self.$table.find('tbody').append(_.template(self.$tmpl.html(), data));
+									self.$table.find('tbody').append(self.template(data));
 									self.initSortable();
 									self.highlight();
 									self.save();
+									$(this).hide();
+									self.$searchList.trigger('scroll');
 								}
 							};
 						})(this));
@@ -614,6 +647,7 @@ class MetaBoxRelatedPosts extends MetaBox
 
 								if (confirm(msg)) {
 									$(this).parents('tr').remove();
+									self.$searchList.add(self.$recentList).find('[data-id="' + $(this).parents('tr').data('id') + '"]').show();
 									self.highlight();
 									self.save();
 								}

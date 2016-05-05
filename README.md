@@ -9,7 +9,21 @@ The WPKit framework is open-source software licensed under GPL-2+ license.
 
 ### Changelog
 
-Version: 1.5.67
+Version: 1.6
+
+ + PostLoader for huge homepages builders to reduce SQL queries
+ + MetaBox Related Posts limit parameter added
+ + PostType show_in_menu, public parameters added
+ + MetaBoxRepeatable - added vertical layout and some improvements
+ + Taxonomy show_ui parameter added
+ * PostType has_archive type fix
+ * Video field changed to use oEmbed
+ * File field fix for SVG support
+ * WP 4.5 improvements
+ * TaxonomyMeta deprecated due to core WP functionality
+ * PHP 7 preparation
+
+Version: 1.5.6
  
  * Youtube API key fix 
 

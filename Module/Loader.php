@@ -15,7 +15,7 @@
 namespace WPKit\Module;
 
 use WPKit\Exception\WpException;
-use WPKit\Helpers\String;
+use WPKit\Helpers\Strings;
 
 class Loader
 {
@@ -139,7 +139,7 @@ class Loader
      */
     protected function _create_module_functions_class($name, array $constants = [])
     {
-        $class_name = String::capitalize($name);
+        $class_name = Strings::capitalize($name);
         $functions_class_name = "\\modules\\$name\\Functions";
 
         $var = '';
@@ -178,7 +178,7 @@ class Loader
     private function _init_module_autoloader()
     {
         spl_autoload_register(function($class_name) {
-            if(String::position($class_name, "modules") !== false) {
+            if(Strings::position($class_name, "modules") !== false) {
                 $filename = TEMPLATEPATH . DIRECTORY_SEPARATOR . ltrim(str_replace("\\", DIRECTORY_SEPARATOR, $class_name), DIRECTORY_SEPARATOR) . ".php";
                 if(is_file($filename)) {
                     require_once $filename;

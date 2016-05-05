@@ -14,9 +14,24 @@
 
 namespace WPKit\Taxonomy;
 
+/**
+ * Class TaxonomyMeta
+ *
+ * @deprecated 
+ * 
+ * @package WPKit\Taxonomy
+ */
 class TaxonomyMeta
 {
+    /**
+     * @var string
+     */
     protected $_table = 'term_meta';
+
+    /**
+     * @var string
+     */
+    protected $_migration_key;
 
     /**
      * @var TaxonomyMeta
@@ -30,12 +45,15 @@ class TaxonomyMeta
 
     protected function __construct()
     {
-        global $wpdb;
-        $this->_db = $wpdb;
-        $this->_table = $this->_db->prefix . $this->_table;
+        $this->_migration_key = "_migrate_from_{$this->_table}_to_termmeta";
 
-        if( ! $this->_is_table_exist() ) {
-            $this->_create_table();
+        if ( !get_option( $this->_migration_key ) ) {
+            global $wpdb;
+
+            $this->_db = $wpdb;
+            $this->_table = $this->_db->prefix . $this->_table;
+
+            $this->_migrate_from_term_meta_to_termmeta();
         }
     }
 
@@ -61,22 +79,11 @@ class TaxonomyMeta
      * @param int $term_id
      * @param string $key
      * @param mixed $value
-     * @return int
+     * @return mixed
      */
     public function update($term_id, $key, $value)
     {
-        $old_value = $this->get($term_id, $key);
-
-        if($old_value === false) {
-            return $this->_add($term_id, $key, $value);
-        }
-
-        if($old_value === $value) {
-            return true;
-        }
-
-        wp_cache_set($this->_get_cache_key($term_id, $key), $value, 'taxonomy-meta');
-        return $this->_db->update( $this->_table, ['meta_value' => maybe_serialize($value)], ['term_id' => $term_id, 'meta_key' => $key] );
+        return update_term_meta( $term_id, $key, $value );
     }
 
     /**
@@ -85,17 +92,11 @@ class TaxonomyMeta
      * @param int $term_id
      * @param string $key
      * @param mixed $value
-     * @return int
+     * @return mixed
      */
     public function add($term_id, $key, $value)
     {
         return $this->update($term_id, $key, $value);
-    }
-
-    protected function _add($term_id, $key, $value)
-    {
-        wp_cache_set($this->_get_cache_key($term_id, $key), $value, 'taxonomy-meta');
-        return $this->_db->insert( $this->_table, ['term_id' => $term_id, 'meta_key' => $key, 'meta_value' => maybe_serialize($value)] );
     }
 
     /**
@@ -107,23 +108,7 @@ class TaxonomyMeta
      */
     public function get($term_id, $key)
     {
-        if( $value = wp_cache_get($this->_get_cache_key($term_id, $key), 'taxonomy-meta')) {
-            return $value;
-        }
-
-        $row = $this->_db->get_row(
-            $this->_db->prepare( "SELECT meta_value FROM {$this->_table} WHERE term_id = %d AND meta_key = %s LIMIT 1", $term_id, $key )
-        );
-
-        if ( is_object( $row ) ) {
-            $value = maybe_unserialize($row->meta_value);
-        }
-        else {
-            $value = false;
-        }
-
-        wp_cache_set($this->_get_cache_key($term_id, $key), $value, 'taxonomy-meta');
-        return $value;
+        return get_term_meta( $term_id, $key, true );
     }
 
     /**
@@ -131,35 +116,48 @@ class TaxonomyMeta
      *
      * @param int $term_id
      * @param string $key
-     * @return int
+     * @return bool
      */
     public function delete($term_id, $key)
     {
-        wp_cache_delete($this->_get_cache_key($term_id, $key), 'taxonomy-meta');
-        return $this->_db->delete( $this->_table, ['term_id' => $term_id, 'meta_key' => $key] );
+        return delete_term_meta( $term_id, $key );
     }
 
-    protected function _get_cache_key($term_id, $key)
-    {
-        return "{$key}-{$term_id}";
-    }
-
+    /**
+     * @return bool
+     */
     protected function _is_table_exist()
     {
         return count($this->_db->get_results("SHOW TABLES LIKE '{$this->_table}'")) > 0;
     }
 
-    protected function _create_table()
+    /**
+     * Migrate from custom db table to core due to termmeta support since WordPress 4.4.0
+     */
+    protected function _migrate_from_term_meta_to_termmeta()
     {
-        $this->_db->query("CREATE TABLE IF NOT EXISTS `{$this->_table}` (
-              `meta_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-              `term_id` bigint(20) unsigned NOT NULL DEFAULT '0',
-              `meta_key` varchar(255) DEFAULT NULL,
-              `meta_value` longtext,
-              PRIMARY KEY (`meta_id`),
-              KEY `term_id` (`term_id`),
-              KEY `meta_key` (`meta_key`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;");
+        if( $this->_is_table_exist() ) {
+            $this->_merge_tables();
+            $this->_drop_table();
+        }
+
+        update_option( $this->_migration_key, 1 );
     }
 
+    /**
+     * Rename custom db table to core due to termmeta support since WordPress 4.4.0
+     */
+    protected function _merge_tables()
+    {
+        return $this->_db->query( "INSERT INTO {$this->_db->termmeta} (term_id, meta_key, meta_value) 
+            SELECT term_id, meta_key, meta_value FROM {$this->_table}" );
+    }
+
+    /**
+     * Drop custom db table due to termmeta support since WordPress 4.4.0
+     */
+    protected function _drop_table()
+    {
+        return $this->_db->query( "DROP TABLE IF EXISTS {$this->_table}" );
+    }
 }

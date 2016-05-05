@@ -59,14 +59,23 @@ class Date extends AbstractField
 		?>
 		<script type="text/javascript">
 			jQuery(function ($) {
-				$('[data-type="date"]').each(function () {
-					var $this = $(this),
-						data = $this.data();
+				wp.wpkit = wp.wpkit || {};
+				wp.wpkit.datepicker = {
+					init: function(){
+						$('[data-type="date"]').each(function () {
+							var $this = $(this),
+								data = $this.data();
 
-					delete data.type;
-					data.dateFormat = 'yy-mm-dd';
-					$this.datepicker(data);
-				});
+							delete data.type;
+							data.dateFormat = 'yy-mm-dd';
+							$this.datepicker(data);
+						});
+					},
+					reinit: function(){
+						this.init();
+					}
+				};
+				wp.wpkit.datepicker.init();
 			});
 		</script>
 		<?php

@@ -3,12 +3,12 @@
 /**
  * Google map field
  *
- * @package WPKit
+ * @package   WPKit
  *
- * @link https://github.com/REDINKno/wpkit for the canonical source repository
+ * @link      https://github.com/REDINKno/wpkit for the canonical source repository
  * @copyright Copyright (c) 2015, Redink AS
- * @license http://www.opensource.org/licenses/gpl-license.php GPL v2.0 (or later)
- * @author Viktor Kuliebiakin <victor@pingbull.no>
+ * @license   http://www.opensource.org/licenses/gpl-license.php GPL v2.0 (or later)
+ * @author    Viktor Kuliebiakin <victor@pingbull.no>
  *
  */
 
@@ -16,8 +16,7 @@ namespace WPKit\Fields;
 
 use WPKit\Helpers\Script;
 
-class Map extends AbstractField
-{
+class Map extends AbstractField {
 	protected $_attributes = ['data-type' => 'map', 'data-map-type' => 'ROADMAP', 'data-zoom' => 14];
 	protected $_type = 'hidden';
 	protected $_size = ['width' => '100%', 'height' => '350px'];
@@ -25,14 +24,14 @@ class Map extends AbstractField
 	protected $_placeholder = 'Address';
 	protected $_description = 'You can select the location by moving the marker, or by entering the coordinates in Latitude and Longitude fields, or by writing address to Address field.';
 
-    /**
-     * wp_enqueue_script action
-     */
+	/**
+	 * wp_enqueue_script action
+	 */
 	public function enqueue_javascript()
 	{
-		wp_enqueue_script( 'jquery-ui-autocomplete' );
-		wp_enqueue_script( 'google-maps-api', '//maps.google.com/maps/api/js?sensor=false', [], false, true );
-		Script::enqueue_admin_inline_script( 'wpkit-field-map', $this->_render_javascript() );
+		wp_enqueue_script('jquery-ui-autocomplete');
+		wp_enqueue_script('google-maps-api', '//maps.google.com/maps/api/js?sensor=false', [], false, true);
+		Script::enqueue_admin_inline_script('wpkit-field-map', $this->_render_javascript());
 	}
 
 	protected function _render_javascript()
@@ -93,18 +92,18 @@ class Map extends AbstractField
 						var id;
 
 						_$map_field = $map_field;
-                        _$map_field.addClass('rendered');
+						_$map_field.addClass('rendered');
 						id = _$map_field.attr('id');
 						_$map_address_field = jQuery('#' + id + '_address');
 						_$map_latitude_field = jQuery('#' + id + '_latitude');
 						_$map_longitude_field = jQuery('#' + id + '_longitude');
 						_$reset_button = jQuery('#' + id + '_reset');
 						_map_container = document.getElementById(id + '_container');
-                        jQuery(_map_container).resize(function(){
-                            setTimeout(function(){
-                                google.maps.event.trigger(_map, 'resize');
-                            }, 3000);
-                        });
+						jQuery(_map_container).resize(function () {
+							setTimeout(function () {
+								google.maps.event.trigger(_map, 'resize');
+							}, 3000);
+						});
 					};
 
 					MapField.prototype.initialize_map = function () {
@@ -239,7 +238,7 @@ class Map extends AbstractField
 									var requested_value = request.term;
 									_geocoder.geocode({'address': requested_value}, function (results, status) {
 										if (status === google.maps.GeocoderStatus.OK) {
-											response(jQuery.map(results, function(item) {
+											response(jQuery.map(results, function (item) {
 												return {
 													value: item.formatted_address,
 													latitude: item.geometry.location.lat(),
@@ -251,7 +250,7 @@ class Map extends AbstractField
 										}
 									});
 								},
-								select: function(event, ui) {
+								select: function (event, ui) {
 									if (typeof ui.item.latitude == 'undefined') {
 										return;
 									}
@@ -305,15 +304,18 @@ class Map extends AbstractField
 
 					return MapField;
 				})();
-
-				jQuery(function() {
+				var InitMap = function () {
 					jQuery('[data-type="map"]').not('.rendered').each(function () {
-                        if( typeof document.mapFields == 'undefined') {
-                            document.mapFields = [];
-                        }
-						document.mapFields.push( new MapField(jQuery(this)) );
+						if (typeof document.mapFields == 'undefined') {
+							document.mapFields = [];
+						}
+						document.mapFields.push(new MapField(jQuery(this)));
 
 					});
+				};
+
+				jQuery(function () {
+					jQuery(document).on('ready repeatable_row_added', InitMap);
 				});
 
 			})();
@@ -322,9 +324,9 @@ class Map extends AbstractField
 		return ob_get_clean();
 	}
 
-    /**
-     * wp_enqueue_style action
-     */
+	/**
+	 * wp_enqueue_style action
+	 */
 	public function enqueue_style()
 	{
 		global $wp_scripts;
@@ -332,12 +334,13 @@ class Map extends AbstractField
 		wp_enqueue_style('jquery-ui-smoothness', "//ajax.googleapis.com/ajax/libs/jqueryui/{$ui->ver}/themes/smoothness/jquery-ui.min.css");
 	}
 
-    /**
-     * Filtering field value
-     *
-     * @param string $value
-     * @return string
-     */
+	/**
+	 * Filtering field value
+	 *
+	 * @param string $value
+	 *
+	 * @return string
+	 */
 	public function apply_filter($value)
 	{
 		return $this->_esc_coordinates($value);
@@ -348,11 +351,11 @@ class Map extends AbstractField
 		return preg_match('/(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)/', $value) ? $value : '';
 	}
 
-    /**
-     * Render full field html (with label)
-     *
-     * @return string
-     */
+	/**
+	 * Render full field html (with label)
+	 *
+	 * @return string
+	 */
 	public function render_field()
 	{
 		return sprintf(
@@ -408,25 +411,26 @@ class Map extends AbstractField
 
 	protected function _get_size()
 	{
-		return implode( ' ', array_map( function ( $v, $k ) {
-			return sprintf( '%s: %s;', $k, $v );
-		}, $this->_size, array_keys( $this->_size ) ) );
+		return implode(' ', array_map(function ($v, $k) {
+			return sprintf('%s: %s;', $k, $v);
+		}, $this->_size, array_keys($this->_size)));
 	}
 
-    /**
-     * Set map size ['width' => '100%', 'height' => '350px']
-     * @param array $size
-     */
+	/**
+	 * Set map size ['width' => '100%', 'height' => '350px']
+	 *
+	 * @param array $size
+	 */
 	public function set_size(array $size)
 	{
 		$this->_size = wp_parse_args($this->_size, $size);
 	}
 
-    /**
-     * Get field reload javascript
-     *
-     * @return string
-     */
+	/**
+	 * Get field reload javascript
+	 *
+	 * @return string
+	 */
 	public function reload_javascript()
 	{
 		return $this->_render_javascript();

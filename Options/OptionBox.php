@@ -15,7 +15,7 @@
 namespace WPKit\Options;
 
 use WPKit\Exception\WpException;
-use WPKit\Helpers\String;
+use WPKit\Helpers\Strings;
 use WPKit\Helpers\GlobalStorage;
 use WPKit\Fields\AbstractField;
 
@@ -183,7 +183,7 @@ class OptionBox
     protected function _is_default_page()
     {
         $reflection = new \ReflectionClass(__CLASS__);
-        if(in_array($this->_page, $reflection->getConstants()) && String::position($_SERVER['REQUEST_URI'], "options-{$this->_page}.php") !== false) {
+        if(in_array($this->_page, $reflection->getConstants()) && Strings::position($_SERVER['REQUEST_URI'], "options-{$this->_page}.php") !== false) {
             return true;
         }
         return false;
