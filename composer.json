@@ -1,7 +1,7 @@
 {
-    "name": "REDINKno/wpkit",
+    "name": "redink-no/wpkit",
     "description": "Object-oriented development framework for WordPress",
-    "version": "1.6",
+    "version": "1.6.1",
     "license": "GPL-2.0+",
     "keywords": ["wordpress", "wpkit"],
     "authors": [
