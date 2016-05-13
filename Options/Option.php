@@ -14,8 +14,8 @@
 
 namespace WPKit\Options;
 
-use WPKit\Fields\AbstractField;
 use WPKit\Exception\WpException;
+use WPKit\Fields\AbstractField;
 use WPKit\Fields\Factory\FieldFactory;
 use WPKit\Fields\Text;
 use WPKit\Helpers\Action;
@@ -64,11 +64,13 @@ class Option
      * Get option value
      *
      * @param string $key
+     * @param string $default
+     *
      * @return mixed
      */
-    public static function get($key)
+    public static function get($key, $default = false)
     {
-        return get_option("option_" . sanitize_key($key));
+        return get_option("option_" . sanitize_key($key), $default);
     }
 
     /**
