@@ -51,7 +51,7 @@ class Url extends Text {
         ?>
         <script type="text/javascript">
             function wpkitCheckURL(url) {
-                var string = url.value;
+                var string = url.value.trim();
                 if (string.length && !~string.indexOf("http")) {
                     string = "http://" + string;
                 }
