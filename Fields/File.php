@@ -177,7 +177,7 @@ class File extends AbstractField
 
                         if(_attachment.mime.indexOf('image') !== -1) {
 
-                            if (typeof _attachment.sizes !== 'undefined' && _attachment.sizes.thumbnail !== null) {
+                            if (typeof _attachment.sizes !== 'undefined' && typeof _attachment.sizes.thumbnail !== 'undefined' && _attachment.sizes.thumbnail !== null) {
                                 _url = _attachment.sizes.thumbnail.url;
                             }
                             else {
