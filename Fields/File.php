@@ -175,9 +175,9 @@ class File extends AbstractField
                         var _attachment = wp_media_file_frame.state().get('selection').first().toJSON(),
                             _url = _attachment.icon;
 
-                        if(_attachment.mime.indexOf('image') != -1) {
+                        if(_attachment.mime.indexOf('image') !== -1) {
 
-                            if (typeof _attachment.sizes !== 'undefined' && _attachment.sizes.thumbnail !== null) {
+                            if (typeof _attachment.sizes !== 'undefined' && typeof _attachment.sizes.thumbnail !== 'undefined' && _attachment.sizes.thumbnail !== null) {
                                 _url = _attachment.sizes.thumbnail.url;
                             }
                             else {
