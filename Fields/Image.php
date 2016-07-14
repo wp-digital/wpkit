@@ -37,7 +37,11 @@ class Image extends File
     protected function _render_file()
     {
         if ( $this->_value ) {
-            return wp_get_attachment_image( $this->_value, 'thumbnail', true ) . '<strong style="display: none" data-role="title">' . get_the_title( $this->_value ) . '</strong>';
+            add_filter( 'wp_calculate_image_srcset', '__return_false' );
+            $image = wp_get_attachment_image( $this->_value, 'thumbnail', true );
+            remove_filter( 'wp_calculate_image_srcset', '__return_false' );
+
+            return $image . '<strong style="display: none" data-role="title">' . get_the_title( $this->_value ) . '</strong>';
         } else {
             return '<img style="display: none" src="" alt="" /><strong style="display: none" data-role="title"></strong>';
         }

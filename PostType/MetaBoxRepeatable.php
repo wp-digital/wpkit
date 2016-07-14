@@ -24,6 +24,8 @@ class MetaBoxRepeatable extends MetaBox
 
     protected $_vertical = false;
 
+    protected $_defaults = [];
+
     protected function _render($post)
     {
         wp_nonce_field($this->get_key() . "_inner_custom_box", $this->get_key() . "_inner_custom_box_nonce");
@@ -102,7 +104,10 @@ class MetaBoxRepeatable extends MetaBox
         $values = get_post_meta($post->ID, $field->get_name(), true);
 
         if( !is_array($values) ) {
-            return null;
+            if (empty($this->_defaults) || !isset($this->_defaults[$field->get_name()])) {
+                return null;
+            }
+            $values = $this->_defaults[$field->get_name()];
         }
 
         return array_key_exists($index, $values) ? $values[$index] : null;
@@ -118,7 +123,10 @@ class MetaBoxRepeatable extends MetaBox
         $data = get_post_meta($post->ID, $first_field->get_name(), true);
 
         if( ! is_array($data) ) {
-            return 0;
+            if (empty($this->_defaults) || !isset($this->_defaults[$first_field->get_name()])) {
+                return 0;
+            }
+            $data = $this->_defaults[$first_field->get_name()];
         }
 
         return count($data);
@@ -401,8 +409,41 @@ class MetaBoxRepeatable extends MetaBox
         $this->_limit = null;
     }
 
+    /**
+     * Set align of fields to vertical
+     *
+     * @param bool $state
+     */
     public function set_vertical($state = true)
     {
         $this->_vertical = $state;
+    }
+
+    /**
+     * Set default values in rows
+     *
+     * @param $values array List of default values in row-like array.
+     *                      Example
+     *                      [
+     *                        ['field1'=>'foo','field2'=>'bar'],
+     *                        ['field1'=>'foo1','field2'=>'bar1'],
+     *                        ['field1'=>'foo2'],
+     *                        ...
+     *                      ]
+     *
+     *
+     * @throws \WPKit\Exception\WpException
+     */
+    public function set_defaults($values)
+    {
+        $keys = array_keys($this->_get_fields());
+        foreach ($values as $i => $row) {
+            foreach ($row as $key => $value) {
+                $key = $this->get_key() . '_' . sanitize_key($key);
+                if (in_array($key, $keys)) {
+                    $this->_defaults[ $key ][] = $value;
+                }
+            }
+        }
     }
 }
