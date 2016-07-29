@@ -1,13 +1,81 @@
 # WPKit
-Object-oriented development framework for WordPress
+> Object-oriented development framework for WordPress to simplify developers life.
 
-### Development
-Powered by Redink AS
 
-### License
-The WPKit framework is open-source software licensed under GPL-2+ license.
+Now you can spend less time for routine operations like creating post-types, taxonomies, meta-boxes. 
+WPKit will help you write less code -> drink more beer :)
 
-### Changelog
+_Powered by Redink AS_
+
+## License
+
+The WPKit framework is open-source software and distributed under the GPL-2+ license. See [LICENSE](LICENSE) for more information.
+
+## Initalization
+
+Just include WPKit autoloader
+
+```php
+require_once __DIR__ . 'WPKit/init_autoloader.php';
+```
+
+and you can start using it. We recommend use module structure fully supported by WPKit.
+
+## Usage example
+
+Lets create post type Cars. You just need create new instance of `PostType` with slug and single name in parameters.
+
+```php
+$cars_post_type = new WPKit\PostType\PostType('car','Car');
+```
+
+Now we need add some custom fields. First of all we need create metabox
+
+```php
+$meta_box = new WPKit\PostType\MetaBox('data','Properties');
+
+$metabox->add_field( 'reg_no', 'Registration #' );  // By default Text field will be used
+$metabox->add_field( 'year', 'Year', 'Number' );    // You can set Field in 3rd parameter as string
+$metabox->add_field( 'color', 'Color', function(){  // Or use more flexible callback function
+	$filed = new WPKit\Fields\Select();
+	$filed->set_options([                           // Like settings options and other
+		'red',
+		'black',
+		'white',
+		'yellow'
+	]);
+	
+	return $filed;                                  // Function should always return created filed
+} );
+
+```
+
+And then we need add this metabox to our post type
+
+```php
+$cars_post_type->add_metabox( $meta_box );
+```
+
+or
+
+```php
+$metabox->add_post_type( $cars_post_type );
+``` 
+
+You can add one matabox to several post types. 
+
+More features will come in Wiki or just explore code ;)
+
+## Release History
+
+Version 1.6.2
+
+ + Default values for repeatable metabox
+ + Auto add 'http://' in Url field
+ + Default value in Option::get method
+ + Remove srcset from image in Image field
+ * Composer rename
+ * Fixes
 
 Version: 1.6
 
@@ -88,3 +156,4 @@ Version: 1.1
 Version: 1.0.4
 
  + first version
+
