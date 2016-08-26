@@ -23,17 +23,38 @@ and you can start using it. We recommend use module structure fully supported by
 
 ## Usage example
 
+### Post type
+
 Lets create post type Cars. You just need create new instance of `PostType` with slug and single name in parameters.
 
 ```php
 $cars_post_type = new WPKit\PostType\PostType('car','Car');
 ```
 
+### Metabox
+
 Now we need add some custom fields. First of all we need create metabox
 
 ```php
-$meta_box = new WPKit\PostType\MetaBox('data','Properties');
+$metabox = new WPKit\PostType\MetaBox('data','Properties');
+```
 
+And then we need add this metabox to our post type
+
+```php
+$cars_post_type->add_metabox( $metabox );
+```
+
+or
+
+```php
+$metabox->add_post_type( $cars_post_type );
+``` 
+You can add one matabox to several post types. 
+
+### Fields
+
+```php
 $metabox->add_field( 'reg_no', 'Registration #' );  // By default Text field will be used
 $metabox->add_field( 'year', 'Year', 'Number' );    // You can set Field in 3rd parameter as string
 $metabox->add_field( 'color', 'Color', function(){  // Or use more flexible callback function
@@ -50,19 +71,15 @@ $metabox->add_field( 'color', 'Color', function(){  // Or use more flexible call
 
 ```
 
-And then we need add this metabox to our post type
+![](https://s3-eu-west-1.amazonaws.com/static-redink/wpkit/example.png)
+
+To get value of custom fields use `MetaBox::get()` method.
 
 ```php
-$cars_post_type->add_metabox( $meta_box );
+<?php $year = WPKit\PostType\MetaBox::get( get_the_ID(), 'data', 'year' ); ?>
 ```
 
-or
 
-```php
-$metabox->add_post_type( $cars_post_type );
-``` 
-
-You can add one matabox to several post types. 
 
 More features will come in Wiki or just explore code ;)
 
@@ -156,4 +173,3 @@ Version: 1.1
 Version: 1.0.4
 
  + first version
-
