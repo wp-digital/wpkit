@@ -223,8 +223,7 @@ class MetaBoxRepeatable extends MetaBox
             #<?= $this->get_key() ?> tbody label { display: none; }
             #<?= $this->get_key() ?> tbody input.large-text, #<?= $this->get_key() ?> tbody textarea.large-text{ width: 100%}
             #<?= $this->get_key() ?> .vertical thead { display: none; }
-            #<?= $this->get_key() ?> .vertical tbody td { display: block; }
-            #<?= $this->get_key() ?> .vertical tbody label { display: inline; }
+            #<?= $this->get_key() ?> .vertical tbody td, #<?= $this->get_key() ?> .vertical tbody label { display: block; }
             #<?= $this->get_key() ?> tbody tr.ui-sortable-helper { background: #E5E5E5; opacity: .8; }
             #<?= $this->get_key() ?> tbody tr.row-placeholder { background-color: #F9F9F9; }
         </style>
