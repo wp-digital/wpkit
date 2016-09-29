@@ -85,6 +85,11 @@ More features will come in Wiki or just explore code ;)
 
 ## Release History
 
+Version 1.6.3
+
+ * Fixes on repeatable 
+ * Fix with http/https select2 assets loading
+
 Version 1.6.2
 
  + Default values for repeatable metabox

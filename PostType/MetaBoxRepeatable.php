@@ -169,7 +169,7 @@ class MetaBoxRepeatable extends MetaBox
                         jQuery(document).trigger('repeatable_row_added', $table.find('tbody tr:last'), rows_count);
                     }
                     else {
-                        alert('Reached the maximum number of fields');
+                        alert('Reached the maximum number of fields: ' + limit);
                         jQuery(document).trigger('repeatable_row_limit_reached');
                     }
                 });
@@ -223,8 +223,7 @@ class MetaBoxRepeatable extends MetaBox
             #<?= $this->get_key() ?> tbody label { display: none; }
             #<?= $this->get_key() ?> tbody input.large-text, #<?= $this->get_key() ?> tbody textarea.large-text{ width: 100%}
             #<?= $this->get_key() ?> .vertical thead { display: none; }
-            #<?= $this->get_key() ?> .vertical tbody td { display: block; }
-            #<?= $this->get_key() ?> .vertical tbody label { display: inline; }
+            #<?= $this->get_key() ?> .vertical tbody td, #<?= $this->get_key() ?> .vertical tbody label { display: block; }
             #<?= $this->get_key() ?> tbody tr.ui-sortable-helper { background: #E5E5E5; opacity: .8; }
             #<?= $this->get_key() ?> tbody tr.row-placeholder { background-color: #F9F9F9; }
         </style>
@@ -354,8 +353,9 @@ class MetaBoxRepeatable extends MetaBox
 						};
 						var reInitEditor = function (id) {
 						    if(typeof tinymce != 'undefined' && typeof id !== 'undefined'){
+						        var settings = get_editor_settings(id);
 							    tinymce.EditorManager.execCommand('mceRemoveEditor', true, id);
-                                tinyMCE.init(get_editor_settings(id));
+                                tinyMCE.init(settings);
 							}
 						};
 						$(document).on('repeatable_row_added', function (e,el) {
@@ -366,7 +366,7 @@ class MetaBoxRepeatable extends MetaBox
 							    }
 							}
 						});
-						$('#campaign_slider').on('sortstop', function (event, ui) {
+						jQuery('#{$this->get_key()}').on('sortstop', function (event, ui) {
 							ui.item.find('.wp-editor-area').each(function () {
 								reInitEditor($(this).attr('id'));
 							});
