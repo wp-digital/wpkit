@@ -64,6 +64,13 @@ class Loader
         }
     }
 
+	/**
+	 * Init autoloader for modules to use in PHPUnit tests
+	 */
+	public function phpunit_load_modules() {
+		$this->_init_module_autoloader();
+	}
+
     /**
      * Load module
      *
