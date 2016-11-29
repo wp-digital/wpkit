@@ -76,7 +76,8 @@ class Select2 extends Select
      */
     public function enqueue_style()
     {
-        wp_register_style('wpkit-select2-lib', "//cdnjs.cloudflare.com/ajax/libs/select2/" . self::SELECT_VERSION . "/select2.min.css", '', self::SELECT_VERSION, 'all');
+        $protocol = is_ssl() ? 'https' : 'http';
+        wp_register_style('wpkit-select2-lib', "$protocol://cdnjs.cloudflare.com/ajax/libs/select2/" . self::SELECT_VERSION . "/select2.min.css", '', self::SELECT_VERSION, 'all');
         wp_enqueue_style('wpkit-select2-lib');
         wp_add_inline_style('wpkit-select2-lib', $this->_render_stylesheets());
     }
@@ -142,7 +143,8 @@ class Select2 extends Select
      */
     public function enqueue_javascript()
     {
-        wp_enqueue_script('wpkit-select2', "//cdnjs.cloudflare.com/ajax/libs/select2/" . self::SELECT_VERSION . "/select2.min.js", ['jquery'], self::SELECT_VERSION);
+        $protocol = is_ssl() ? 'https' : 'http';
+        wp_enqueue_script('wpkit-select2', "$protocol://cdnjs.cloudflare.com/ajax/libs/select2/" . self::SELECT_VERSION . "/select2.min.js", ['jquery'], self::SELECT_VERSION);
         Script::enqueue_admin_inline_script('wpkit-select2-init' . $this->get_id(), $this->_render_javascript());
     }
 }
