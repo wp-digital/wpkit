@@ -126,7 +126,7 @@ class Select2 extends Select
         <script type="text/javascript">
             jQuery(function () {
                 var initSelect2 = function() {
-                    jQuery("select.select2:not('.select2-offscreen')").select2(<?= json_encode($this->get_select2_options()) ?>);
+                    jQuery("select.select2:not('.select2-offscreen')[id^='<?= $this->get_id() ?>']").select2(<?= json_encode($this->get_select2_options()) ?>);
                 };
                 initSelect2();
                 jQuery(document).on('repeatable_row_added', function() {
