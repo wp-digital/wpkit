@@ -28,6 +28,7 @@ class Taxonomy
     protected $_display_in_table = true;
     protected $_show_ui = true;
 	protected $_show_in_nav_menus = true;
+	protected $_public = true;
     protected $_capabilities = [];
 	protected $_rewrite = [];
 
@@ -114,6 +115,7 @@ class Taxonomy
 			'show_in_nav_menus'     => $this->_show_in_nav_menus,
             'capabilities'          => $this->_capabilities,
             'rewrite'               => $this->get_rewrite(),
+	        'public' =>$this->_public
         ]);
     }
 
@@ -202,6 +204,11 @@ class Taxonomy
     {
         $this->_show_ui = (bool) $is_show_ui;
     }
+
+	public function set_public($is_public)
+	{
+		$this->_public = (bool) $is_public;
+	}
     
 	public function is_show_in_nav_menus()
 	{
