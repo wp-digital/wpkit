@@ -32,10 +32,23 @@ class Select2 extends Select
     public function set_placeholder( $placeholder )
     {
         $this->_placeholder = $placeholder;
-        $this->set_attribute('data-placeholder', $this->get_placeholder());
+	    $this->add_select2_option( 'placeholder', $this->get_placeholder() );
+	    $this->add_select2_option( 'allowClear', true );
     }
 
-    /**
+	protected function _render_options() {
+		$output = $this->get_placeholder() ? "<option value=''></option>" : '';
+
+		foreach ($this->get_options() as $key => $title) {
+			$selected = $this->_selected($key);
+			$output .= "<option {$selected} value='{$key}'>{$title}</option>";
+		}
+
+		return $output;
+	}
+
+
+	/**
      * Set select2 plugin options
      *
      * @see https://select2.github.io/
@@ -147,4 +160,5 @@ class Select2 extends Select
         wp_enqueue_script('wpkit-select2', "$protocol://cdnjs.cloudflare.com/ajax/libs/select2/" . self::SELECT_VERSION . "/select2.min.js", ['jquery'], self::SELECT_VERSION);
         Script::enqueue_admin_inline_script('wpkit-select2-init' . $this->get_id(), $this->_render_javascript());
     }
+
 }
