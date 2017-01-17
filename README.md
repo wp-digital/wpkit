@@ -16,7 +16,7 @@ The WPKit framework is open-source software and distributed under the GPL-2+ lic
 Just include WPKit autoloader
 
 ```php
-require_once __DIR__ . 'WPKit/init_autoloader.php';
+require_once __DIR__ . '/WPKit/init_autoloader.php';
 ```
 
 and you can start using it. We recommend use module structure fully supported by WPKit.

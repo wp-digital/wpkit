@@ -30,7 +30,7 @@ class Map extends AbstractField {
 	public function enqueue_javascript()
 	{
 		wp_enqueue_script('jquery-ui-autocomplete');
-		wp_enqueue_script('google-maps-api', '//maps.google.com/maps/api/js?sensor=false', [], false, true);
+		wp_enqueue_script('google-maps-api', '//maps.google.com/maps/api/js', [], false, true);
 		Script::enqueue_admin_inline_script('wpkit-field-map', $this->_render_javascript());
 	}
 
@@ -56,7 +56,8 @@ class Map extends AbstractField {
 							latitude: 59.8938549,
 							longitude: 10.7851165,
 							map_type: 'ROADMAP',
-							zoom: 14
+							zoom: 14,
+                            scrollwheel: false
 						},
 						_geocoder = null,
 						_map = null,
