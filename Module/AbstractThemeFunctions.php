@@ -36,6 +36,7 @@ abstract class AbstractThemeFunctions extends AbstractFunctions
             $the_query = new \WP_Query( [
                 'posts_per_page' => 1,
                 'post_type'      => 'page',
+                'fields'         => 'ids',
                 'meta_query'     => [
                     [
                         'key'   => '_wp_page_template',
@@ -43,7 +44,7 @@ abstract class AbstractThemeFunctions extends AbstractFunctions
                     ],
                 ],
             ] );
-            $page_id = $the_query->have_posts() ? $the_query->get_posts()[0]->ID : 0;
+            $page_id = $the_query->have_posts() ? $the_query->get_posts()[0] : 0;
             wp_cache_set($template_name, $page_id, 'template-page');
         }
 
