@@ -118,6 +118,8 @@ class Select2 extends Select
         .select2-container-multi .select2-choices .select2-search-choice-focus { background: #e1e1e1; }
         .select2-dropdown-open.select2-drop-above .select2-choice, .select2-dropdown-open.select2-drop-above .select2-choices { background: #fff !important; border: 1px solid #dcdcdc; -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px; }
         .select2-container .select2-choice > .select2-chosen i, .select2-results .select2-result-label i, .select2-container-multi .select2-choices .select2-search-choice i { margin: -1px 6px 0 0; height: 15px; vertical-align: -2px }
+        .select2-container.select2-container--default .select2-selection--single .select2-selection__rendered{line-height: 26px;}
+        .select2-container.select2-container--default .select2-selection--single{border-radius: 0;}
         <?php
         return ob_get_clean();
     }
