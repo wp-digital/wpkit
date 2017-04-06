@@ -16,7 +16,7 @@ The WPKit framework is open-source software and distributed under the GPL-2+ lic
 Just include WPKit autoloader
 
 ```php
-require_once __DIR__ . 'WPKit/init_autoloader.php';
+require_once __DIR__ . '/WPKit/init_autoloader.php';
 ```
 
 and you can start using it. We recommend use module structure fully supported by WPKit.
@@ -79,8 +79,21 @@ To get value of custom fields use `MetaBox::get()` method.
 <?php $year = WPKit\PostType\MetaBox::get( get_the_ID(), 'data', 'year' ); ?>
 ```
 
+### Tests
 
+You can use [WP_Mock](https://github.com/10up/wp_mock). There are an example of bootstrap file for tests:
 
+```php
+require_once 'vendor/autoload.php';
+
+WP_Mock::bootstrap();
+
+define( 'TEMPLATEPATH', __DIR__ );
+$loader = new \WPKit\Module\Loader();
+$loader->phpunit_load_modules();
+```
+
+##
 More features will come in Wiki or just explore code ;)
 
 ## Release History

@@ -23,14 +23,19 @@ class Map extends AbstractField {
 	protected $_classes = ['large-text'];
 	protected $_placeholder = 'Address';
 	protected $_description = 'You can select the location by moving the marker, or by entering the coordinates in Latitude and Longitude fields, or by writing address to Address field.';
-
+	protected static $_api_key='';
 	/**
 	 * wp_enqueue_script action
 	 */
 	public function enqueue_javascript()
 	{
+		$key=$this->get_api_key();
+		$api_url='//maps.google.com/maps/api/js';
+		if($key){
+			$api_url=add_query_arg('key',$key,$api_url);
+		}
 		wp_enqueue_script('jquery-ui-autocomplete');
-		wp_enqueue_script('google-maps-api', '//maps.google.com/maps/api/js?sensor=false', [], false, true);
+		wp_enqueue_script('google-maps-api', $api_url, [], false, true);
 		Script::enqueue_admin_inline_script('wpkit-field-map', $this->_render_javascript());
 	}
 
@@ -56,7 +61,8 @@ class Map extends AbstractField {
 							latitude: 59.8938549,
 							longitude: 10.7851165,
 							map_type: 'ROADMAP',
-							zoom: 14
+							zoom: 14,
+                            scrollwheel: false
 						},
 						_geocoder = null,
 						_map = null,
@@ -424,6 +430,27 @@ class Map extends AbstractField {
 	public function set_size(array $size)
 	{
 		$this->_size = wp_parse_args($this->_size, $size);
+	}
+
+	/**
+	 * Set map API key
+	 *
+	 * @param string $key
+	 */
+	public function set_api_key($key)
+	{
+		if(!static::$_api_key) {
+			static::$_api_key=$key;
+		}
+	}
+	/**
+	 * Get map API key
+	 *
+	 * @return string
+	 */
+	public function get_api_key()
+	{
+		return static::$_api_key;
 	}
 
 	/**
