@@ -129,7 +129,11 @@ class PostSelect extends Select2
                                 var selected = $field.val();
 
                                 if (selected) {
-                                    query.exclude = selected;
+                                    if (query.hasOwnProperty('exclude')) {
+                                        query.exclude += ',' + selected;
+                                    } else {
+                                        query.exclude = selected;
+                                    }
                                 }
 
                                 return query;
