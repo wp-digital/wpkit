@@ -33,6 +33,7 @@ class Taxonomy
 	protected $_public = true;
     protected $_capabilities = [];
 	protected $_rewrite = [];
+	protected $_show_in_rest = false;
 
     protected $_pluralize = true;
     protected $_custom_labels = [];
@@ -109,17 +110,18 @@ class Taxonomy
         }
 
 	    register_taxonomy( $this->_key, $this->_post_types, [
-		    'hierarchical'      => $this->_hierarchical,
-		    'labels'            => $this->_get_labels(),
-		    'show_ui'           => $this->_show_ui,
-		    'show_admin_column' => $this->_display_in_table,
-		    'query_var'         => true,
-		    'show_in_nav_menus' => $this->_show_in_nav_menus,
-		    'capabilities'      => $this->_capabilities,
-		    'rewrite'           => $this->get_rewrite(),
-		    'public'            => $this->_public,
-		    'show_in_quick_edit'         => $this->_show_in_quick_edit,
-			'meta_box_cb'                => $this->_meta_box_cb,
+		    'hierarchical'       => $this->_hierarchical,
+		    'labels'             => $this->_get_labels(),
+		    'show_ui'            => $this->_show_ui,
+		    'show_admin_column'  => $this->_display_in_table,
+		    'query_var'          => true,
+		    'show_in_nav_menus'  => $this->_show_in_nav_menus,
+		    'capabilities'       => $this->_capabilities,
+		    'rewrite'            => $this->get_rewrite(),
+		    'public'             => $this->_public,
+		    'show_in_quick_edit' => $this->_show_in_quick_edit,
+			'meta_box_cb'        => $this->_meta_box_cb,
+            'show_in_rest'       => $this->_show_in_rest,
 	    ] );
     }
 
@@ -207,6 +209,16 @@ class Taxonomy
     public function set_show_ui($is_show_ui)
     {
         $this->_show_ui = (bool) $is_show_ui;
+    }
+
+    /**
+     * Whether to include the taxonomy in the REST API
+     *
+     * @param bool $is_show_in_rest
+     */
+    public function set_show_in_rest( $is_show_in_rest )
+    {
+        $this->_show_in_rest = (bool) $is_show_in_rest;
     }
 
 	public function set_public($is_public)
