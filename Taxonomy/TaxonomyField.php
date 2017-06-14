@@ -232,12 +232,12 @@ class TaxonomyField
 
     protected function _save($term_id)
     {
-        if ( !$this->get_field()->is_disabled() ) {
-            $value = isset( $_POST[ $this->get_key() ] ) ? $_POST[ $this->get_key() ] : null;
+        if ( !$this->get_field()->is_disabled() && isset( $_POST[$this->get_key()] ) ) {
+            $value = $_POST[ $this->get_key() ];
             $this->get_field()->set_value( $value );
             $value = $this->get_field()->get_value();
 
-            if($value !== '' && $value !== null) {
+            if($value !== '') {
                 update_term_meta($term_id, $this->get_key(), $value);
             }
             else {
