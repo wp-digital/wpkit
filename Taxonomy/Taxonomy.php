@@ -30,6 +30,7 @@ class Taxonomy
     protected $_meta_box_cb = null;
     protected $_show_ui = true;
 	protected $_show_in_nav_menus = true;
+	protected $_show_in_menu = true;
 	protected $_public = true;
     protected $_capabilities = [];
 	protected $_rewrite = [];
@@ -235,6 +236,16 @@ class Taxonomy
     {
 	    $this->_show_in_nav_menus = (bool) $is_show_in_nav_menus;
     }
+
+	public function is_show_in_menu()
+	{
+		return $this->_show_in_menu;
+	}
+
+	public function set_show_in_menu($is_show_in_menu)
+	{
+		$this->_show_in_menu = (bool) $is_show_in_menu;
+	}
 
     public function set_display_in_table($is_display)
     {
