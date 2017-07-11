@@ -29,6 +29,13 @@ class PostSelect extends Select2
     protected $_query = [];
 
     /**
+     * Rest endpoint
+     *
+     * @var string
+     */
+    protected $_rest_endpoint='posts';
+
+    /**
      * Set query arguments
      *
      * @param array $query
@@ -84,6 +91,26 @@ class PostSelect extends Select2
         return static::apply_filter( $value );
     }
 
+	/**
+	 * Set Rest Endpoint
+	 *
+	 * @param $endpoint string
+	 */
+    public function set_rest_endpoint($endpoint)
+    {
+		$this->_rest_endpoint=sanitize_title_with_dashes($endpoint);
+    }
+
+	/**
+	 * Get Rest Endpoint
+	 *
+	 * @return string
+	 */
+	public function get_endpoint()
+	{
+		return $this->_rest_endpoint;
+	}
+
     /**
      * Render select field options html
      *
@@ -120,7 +147,7 @@ class PostSelect extends Select2
 
                     $field.select2($.extend({
                         ajax: {
-                            url: '<?= esc_url_raw( rest_url( 'wp/v2/posts' ) ) ?>',
+                            url: '<?= esc_url_raw( rest_url( 'wp/v2/'.$this->get_endpoint() ) ) ?>',
                             data: function (params) {
                                 var query = $.extend({
                                     search: params.term,
