@@ -16,7 +16,7 @@ The WPKit framework is open-source software and distributed under the GPL-2+ lic
 Just include WPKit autoloader
 
 ```php
-require_once __DIR__ . 'WPKit/init_autoloader.php';
+require_once __DIR__ . '/WPKit/init_autoloader.php';
 ```
 
 and you can start using it. We recommend use module structure fully supported by WPKit.
@@ -79,11 +79,35 @@ To get value of custom fields use `MetaBox::get()` method.
 <?php $year = WPKit\PostType\MetaBox::get( get_the_ID(), 'data', 'year' ); ?>
 ```
 
+### Tests
 
+You can use [WP_Mock](https://github.com/10up/wp_mock). There are an example of bootstrap file for tests:
 
+```php
+require_once 'vendor/autoload.php';
+
+WP_Mock::bootstrap();
+
+define( 'TEMPLATEPATH', __DIR__ );
+$loader = new \WPKit\Module\Loader();
+$loader->phpunit_load_modules();
+```
+
+##
 More features will come in Wiki or just explore code ;)
 
 ## Release History
+Version 1.7.0
+
+ + New options for OptionPage, Taxonomy
+ + DateTime and PostSelect field added
+ + Api key for google maps field
+ + Unit Testing with [WP_Mock](https://github.com/10up/wp_mock) added
+ * Fix ssl assets load
+ * Fix for using WPKit in child themes
+ * Select2 updated to 4.0.3 version
+ * Placeholder fix for Select2
+ * Fix problem with several Select2 on page
 
 Version 1.6.3
 

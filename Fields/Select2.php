@@ -22,7 +22,7 @@ class Select2 extends Select
 {
     protected $_classes = ['select2'];
     protected $_select2_options = [];
-    const SELECT_VERSION = '3.5.2';
+    const SELECT_VERSION = '4.0.3';
 
     /**
      * Set field placeholder
@@ -32,10 +32,23 @@ class Select2 extends Select
     public function set_placeholder( $placeholder )
     {
         $this->_placeholder = $placeholder;
-        $this->set_attribute('data-placeholder', $this->get_placeholder());
+	    $this->add_select2_option( 'placeholder', $this->get_placeholder() );
+	    $this->add_select2_option( 'allowClear', true );
     }
 
-    /**
+	protected function _render_options() {
+		$output = $this->get_placeholder() ? "<option value=''></option>" : '';
+
+		foreach ($this->get_options() as $key => $title) {
+			$selected = $this->_selected($key);
+			$output .= "<option {$selected} value='{$key}'>{$title}</option>";
+		}
+
+		return $output;
+	}
+
+
+	/**
      * Set select2 plugin options
      *
      * @see https://select2.github.io/
@@ -76,7 +89,8 @@ class Select2 extends Select
      */
     public function enqueue_style()
     {
-        wp_register_style('wpkit-select2-lib', "//cdnjs.cloudflare.com/ajax/libs/select2/" . self::SELECT_VERSION . "/select2.min.css", '', self::SELECT_VERSION, 'all');
+        $protocol = is_ssl() ? 'https' : 'http';
+        wp_register_style('wpkit-select2-lib', "$protocol://cdnjs.cloudflare.com/ajax/libs/select2/" . self::SELECT_VERSION . "/css/select2.min.css", '', self::SELECT_VERSION, 'all');
         wp_enqueue_style('wpkit-select2-lib');
         wp_add_inline_style('wpkit-select2-lib', $this->_render_stylesheets());
     }
@@ -104,6 +118,8 @@ class Select2 extends Select
         .select2-container-multi .select2-choices .select2-search-choice-focus { background: #e1e1e1; }
         .select2-dropdown-open.select2-drop-above .select2-choice, .select2-dropdown-open.select2-drop-above .select2-choices { background: #fff !important; border: 1px solid #dcdcdc; -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px; }
         .select2-container .select2-choice > .select2-chosen i, .select2-results .select2-result-label i, .select2-container-multi .select2-choices .select2-search-choice i { margin: -1px 6px 0 0; height: 15px; vertical-align: -2px }
+        .select2-container.select2-container--default .select2-selection--single .select2-selection__rendered{line-height: 26px;}
+        .select2-container.select2-container--default .select2-selection--single{border-radius: 0;}
         <?php
         return ob_get_clean();
     }
@@ -125,7 +141,7 @@ class Select2 extends Select
         <script type="text/javascript">
             jQuery(function () {
                 var initSelect2 = function() {
-                    jQuery("select.select2:not('.select2-offscreen')").select2(<?= json_encode($this->get_select2_options()) ?>);
+                    jQuery("select.select2:not('.select2-offscreen')[id^='<?= $this->get_id() ?>']").select2(<?= json_encode($this->get_select2_options()) ?>);
                 };
                 initSelect2();
                 jQuery(document).on('repeatable_row_added', function() {
@@ -142,7 +158,9 @@ class Select2 extends Select
      */
     public function enqueue_javascript()
     {
-        wp_enqueue_script('wpkit-select2', "//cdnjs.cloudflare.com/ajax/libs/select2/" . self::SELECT_VERSION . "/select2.min.js", ['jquery'], self::SELECT_VERSION);
+        $protocol = is_ssl() ? 'https' : 'http';
+        wp_enqueue_script('wpkit-select2', "$protocol://cdnjs.cloudflare.com/ajax/libs/select2/" . self::SELECT_VERSION . "/js/select2.min.js", ['jquery'], self::SELECT_VERSION);
         Script::enqueue_admin_inline_script('wpkit-select2-init' . $this->get_id(), $this->_render_javascript());
     }
+
 }

@@ -37,6 +37,7 @@ class PostType
 	protected $_capabilities = [];
 	protected $_taxonomies = [];
 	protected $_show_ui = true;
+	protected $_show_in_rest = false;
 
 	protected $_pluralize = true;
 	protected $_custom_labels = [];
@@ -108,6 +109,7 @@ class PostType
 			'capabilities'        => $this->_capabilities,
 			'taxonomies'          => $this->_taxonomies,
 			'show_ui'             => $this->_show_ui,
+            'show_in_rest'        => $this->_show_in_rest,
 		]);
 	}
 
@@ -191,6 +193,16 @@ class PostType
     {
 		$this->_show_ui = (bool) $show_ui;
 	}
+
+    /**
+     * Whether to add the post type route in the REST API
+     *
+     * @param bool $is_show_in_rest
+     */
+    public function set_show_in_rest( $is_show_in_rest )
+    {
+        $this->_show_in_rest = (bool) $is_show_in_rest;
+    }
 
     /**
      * Set post type supports

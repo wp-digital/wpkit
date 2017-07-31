@@ -215,7 +215,8 @@ class Strings {
      */
 	public static function capitalize($word)
 	{
-		$word[0] = mb_strtoupper($word[0]);
+		$word = mb_convert_case($word, MB_CASE_TITLE, "UTF-8");
+
 		return $word;
 	}
 

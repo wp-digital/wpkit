@@ -25,6 +25,23 @@ abstract class AbstractPage
 
     protected $_menu_icon = null;
     protected $_menu_position = null;
+    protected $_capability = 'manage_options';
+
+	/**
+	 * @return string
+	 */
+	private function get_capability() {
+		return $this->_capability;
+	}
+
+	/**
+	 * Set capability for page
+	 *
+	 * @param string $capability
+	 */
+	public function set_capability( $capability ) {
+		$this->_capability = $capability;
+	}
 
     public function __construct($key, $title, $parent = null)
     {
@@ -107,10 +124,10 @@ abstract class AbstractPage
     protected function _add_action_admin_menu()
     {
         if(is_null($this->_parent)) {
-            add_menu_page($this->_title, $this->_title, 'manage_options', $this->_key, [$this, 'render'], $this->_menu_icon, $this->_menu_position);
+            add_menu_page($this->_title, $this->_title, $this->get_capability(), $this->_key, [$this, 'render'], $this->_menu_icon, $this->_menu_position);
         }
         else {
-            add_submenu_page($this->_parent, $this->_title, $this->_title, 'manage_options', $this->_key, [$this, 'render']);
+            add_submenu_page($this->_parent, $this->_title, $this->_title, $this->get_capability(), $this->_key, [$this, 'render']);
         }
     }
 
