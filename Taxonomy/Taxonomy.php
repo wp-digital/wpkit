@@ -14,10 +14,10 @@
 
 namespace WPKit\Taxonomy;
 
-use WPKit\PostType\PostType;
 use WPKit\Exception\WpException;
-use WPKit\Helpers\Strings;
 use WPKit\Fields\AbstractField;
+use WPKit\Helpers\Strings;
+use WPKit\PostType\PostType;
 
 class Taxonomy
 {
@@ -26,10 +26,15 @@ class Taxonomy
     protected $_post_types = [];
     protected $_hierarchical = true;
     protected $_display_in_table = true;
+    protected $_show_in_quick_edit = true;
+    protected $_meta_box_cb = null;
     protected $_show_ui = true;
 	protected $_show_in_nav_menus = true;
+	protected $_show_in_menu = true;
+	protected $_public = true;
     protected $_capabilities = [];
 	protected $_rewrite = [];
+	protected $_show_in_rest = false;
 
     protected $_pluralize = true;
     protected $_custom_labels = [];
@@ -105,16 +110,20 @@ class Taxonomy
             }
         }
 
-        register_taxonomy($this->_key, $this->_post_types, [
-            'hierarchical'          => $this->_hierarchical,
-            'labels'                => $this->_get_labels(),
-            'show_ui'               => $this->_show_ui,
-            'show_admin_column'     => $this->_display_in_table,
-            'query_var'             => true,
-			'show_in_nav_menus'     => $this->_show_in_nav_menus,
-            'capabilities'          => $this->_capabilities,
-            'rewrite'               => $this->get_rewrite(),
-        ]);
+	    register_taxonomy( $this->_key, $this->_post_types, [
+		    'hierarchical'       => $this->_hierarchical,
+		    'labels'             => $this->_get_labels(),
+		    'show_ui'            => $this->_show_ui,
+		    'show_admin_column'  => $this->_display_in_table,
+		    'query_var'          => true,
+		    'show_in_nav_menus'  => $this->_show_in_nav_menus,
+		    'capabilities'       => $this->_capabilities,
+		    'rewrite'            => $this->get_rewrite(),
+		    'public'             => $this->_public,
+		    'show_in_quick_edit' => $this->_show_in_quick_edit,
+			'meta_box_cb'        => $this->_meta_box_cb,
+            'show_in_rest'       => $this->_show_in_rest,
+	    ] );
     }
 
     protected function _get_labels()
@@ -202,6 +211,21 @@ class Taxonomy
     {
         $this->_show_ui = (bool) $is_show_ui;
     }
+
+    /**
+     * Whether to include the taxonomy in the REST API
+     *
+     * @param bool $is_show_in_rest
+     */
+    public function set_show_in_rest( $is_show_in_rest )
+    {
+        $this->_show_in_rest = (bool) $is_show_in_rest;
+    }
+
+	public function set_public($is_public)
+	{
+		$this->_public = (bool) $is_public;
+	}
     
 	public function is_show_in_nav_menus()
 	{
@@ -213,6 +237,16 @@ class Taxonomy
 	    $this->_show_in_nav_menus = (bool) $is_show_in_nav_menus;
     }
 
+	public function is_show_in_menu()
+	{
+		return $this->_show_in_menu;
+	}
+
+	public function set_show_in_menu($is_show_in_menu)
+	{
+		$this->_show_in_menu = (bool) $is_show_in_menu;
+	}
+
     public function set_display_in_table($is_display)
     {
         $this->_display_in_table = (bool) $is_display;
@@ -222,6 +256,17 @@ class Taxonomy
     {
         return $this->_display_in_table;
     }
+
+	public function set_show_in_quick_edit($is_show)
+	{
+		$this->_show_in_quick_edit = (bool) $is_show;
+	}
+
+	public function set_meta_box_cb($meta_box_cb)
+	{
+		$this->_meta_box_cb = $meta_box_cb;
+	}
+
 
     /**
      * Add a field to taxonomy

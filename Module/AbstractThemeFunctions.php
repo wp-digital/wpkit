@@ -33,8 +33,18 @@ abstract class AbstractThemeFunctions extends AbstractFunctions
         }
 
         if( false === ($page_id = wp_cache_get($template_name, 'template-page')) ) {
-            global $wpdb;
-            $page_id = (int) $wpdb->get_var( $wpdb->prepare("SELECT post_id FROM {$wpdb->postmeta} WHERE meta_value = '%s' AND meta_key = '_wp_page_template' LIMIT 1", $template_name) );
+            $the_query = new \WP_Query( [
+                'posts_per_page' => 1,
+                'post_type'      => 'page',
+                'fields'         => 'ids',
+                'meta_query'     => [
+                    [
+                        'key'   => '_wp_page_template',
+                        'value' => $template_name,
+                    ],
+                ],
+            ] );
+            $page_id = $the_query->have_posts() ? $the_query->get_posts()[0] : 0;
             wp_cache_set($template_name, $page_id, 'template-page');
         }
 
