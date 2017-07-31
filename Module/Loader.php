@@ -38,7 +38,7 @@ class Loader
     {
         $this->_init_module_autoloader();
 
-        $dir = TEMPLATEPATH . DIRECTORY_SEPARATOR . "modules";
+        $dir = STYLESHEETPATH . DIRECTORY_SEPARATOR . "modules";
 
         // load all modules from directory
         if($modules === null) {
@@ -186,7 +186,7 @@ class Loader
     {
         spl_autoload_register(function($class_name) {
             if(Strings::position($class_name, "modules") !== false) {
-                $filename = TEMPLATEPATH . DIRECTORY_SEPARATOR . ltrim(str_replace("\\", DIRECTORY_SEPARATOR, $class_name), DIRECTORY_SEPARATOR) . ".php";
+                $filename = STYLESHEETPATH . DIRECTORY_SEPARATOR . ltrim(str_replace("\\", DIRECTORY_SEPARATOR, $class_name), DIRECTORY_SEPARATOR) . ".php";
                 if(is_file($filename)) {
                     require_once $filename;
                     return true;

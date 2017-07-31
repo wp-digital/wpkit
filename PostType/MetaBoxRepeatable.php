@@ -82,7 +82,7 @@ class MetaBoxRepeatable extends MetaBox
 
     protected function _render_row($index, $post)
     {
-        $class = $index % 2 == 0 ? ' class="alternate"' : '';
+	    $class = ( (int) $index ) % 2 == 0 ? ' class="alternate"' : '';
         $html = "<tr{$class} data-index=\"{$index}\">";
         $html .= '<th class="plugins drag-handle" scope="row"><i class="dashicons dashicons-menu"></i></th>';
         foreach($this->_get_fields() as $field) {
