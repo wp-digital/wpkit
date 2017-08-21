@@ -164,7 +164,7 @@ class MetaBoxRepeatable extends MetaBox
                     var rows_count = $table.find('tbody tr').size();
                     var limit = parseInt( jQuery(this).data('limit') );
                     if( limit == 0 || limit > rows_count ) {
-                        $table.find('tbody').append(html.replace(/__i__/g, rows_count));
+                        $table.find('tbody:first').append(html.replace(/__i__/g, rows_count));
                         refreshGrid();
                         jQuery(document).trigger('repeatable_row_added', $table.find('tbody tr:last'), rows_count);
                     }
