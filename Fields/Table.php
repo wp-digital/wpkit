@@ -63,7 +63,7 @@ class Table extends Textarea
                                 data = table.getData();
                                 $field.val(data.slice(0, -1).map(function (cols) {
                                     return cols.slice(0, -1).join(',');
-                                }).join('\n'));
+                                }).join('\n')).trigger('change');
                             }
                         }
                     });
