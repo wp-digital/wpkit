@@ -14,7 +14,6 @@
 
 namespace WPKit\Fields;
 
-use WPKit\Helpers\Date as DateHelper;
 use WPKit\Helpers\Script;
 
 class DateTime extends AbstractField {
@@ -23,11 +22,13 @@ class DateTime extends AbstractField {
 		'data-type'                     => 'datetime',
 		'data-format'                   => 'yyyy-mm-dd hh:ii',
 		'data-disableDblClickSelection' => 'true',
-		'data-pick-time'                => 'true'
+		'data-pick-time'                => 'true',
+		'data-left-arrow'               => '<',
+		'data-right-arrow'              => '>',
 	];
 	protected $_type = 'text';
 	protected $_placeholder = 'yyyy-mm-dd hh:ii';
-	private $dp_ver = '1.5.5';
+	private $dp_ver = '1.5.6';
 
 	/**
 	 * wp_enqueue_script action
