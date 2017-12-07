@@ -14,8 +14,8 @@
 
 namespace WPKit\PostType;
 
-use WPKit\Helpers\Strings;
 use WPKit\Exception\WpException;
+use WPKit\Helpers\Strings;
 use WPKit\Taxonomy\Taxonomy;
 
 class PostType
@@ -38,6 +38,7 @@ class PostType
 	protected $_taxonomies = [];
 	protected $_show_ui = true;
 	protected $_show_in_rest = false;
+	protected $_rest_base = '';
 
 	protected $_pluralize = true;
 	protected $_custom_labels = [];
@@ -110,6 +111,7 @@ class PostType
 			'taxonomies'          => $this->_taxonomies,
 			'show_ui'             => $this->_show_ui,
             'show_in_rest'        => $this->_show_in_rest,
+            'rest_base'           => $this->_rest_base,
 		]);
 	}
 
@@ -196,12 +198,22 @@ class PostType
 
     /**
      * Whether to add the post type route in the REST API
+     * @since 4.7.0
      *
      * @param bool $is_show_in_rest
      */
-    public function set_show_in_rest( $is_show_in_rest )
-    {
+    public function set_show_in_rest( $is_show_in_rest ) {
         $this->_show_in_rest = (bool) $is_show_in_rest;
+        $this->set_rest_base( $this->_pluralize ? Strings::pluralize( $this->get_key() ) : $this->get_key() );
+    }
+
+    /**
+     * @since 4.7.0
+     *
+     * @param string $rest_base
+     */
+    public function set_rest_base( $rest_base ) {
+        $this->_rest_base = $rest_base;
     }
 
     /**
@@ -333,7 +345,7 @@ class PostType
 
 	/**
 	 * Set is post type is visible in admin menu or change its placement
-	 * 
+	 *
 	 * @param string|bool $show_in_menu
 	 */
     public function set_show_in_menu($show_in_menu)
