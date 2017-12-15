@@ -37,30 +37,39 @@ class Loader
     public function load_modules(array $modules = null)
     {
         $this->_init_module_autoloader();
+        $dirs = [
+            TEMPLATEPATH,
+        ];
 
-        $dir = STYLESHEETPATH . DIRECTORY_SEPARATOR . "modules";
-
-        // load all modules from directory
-        if($modules === null) {
-
-            if( ! is_dir($dir) ) {
-                throw new WpException("Invalid modules directory: $dir");
-            }
-
-            foreach (new \DirectoryIterator($dir) as $file) {
-                if ($file->isDir() && !$file->isDot()) {
-                    $this->_load_module($dir, $file->getFilename());
-                }
-            }
-
+        if ( is_child_theme() ) {
+            $dirs[] = STYLESHEETPATH;
         }
-        // load modules from list
-        else {
 
-            foreach($modules as $module) {
-                $this->_load_module($dir, $module);
+        foreach ( $dirs as $dir ) {
+            $dir .= DIRECTORY_SEPARATOR . "modules";
+
+            // load all modules from directory
+            if($modules === null) {
+
+                if( ! is_dir($dir) ) {
+                    throw new WpException("Invalid modules directory: $dir");
+                }
+
+                foreach (new \DirectoryIterator($dir) as $file) {
+                    if ($file->isDir() && !$file->isDot()) {
+                        $this->_load_module($dir, $file->getFilename());
+                    }
+                }
+
             }
+            // load modules from list
+            else {
 
+                foreach($modules as $module) {
+                    $this->_load_module($dir, $module);
+                }
+
+            }
         }
     }
 
@@ -184,15 +193,27 @@ class Loader
      */
     private function _init_module_autoloader()
     {
-        spl_autoload_register(function($class_name) {
-            if(Strings::position($class_name, "modules") !== false) {
-                $filename = STYLESHEETPATH . DIRECTORY_SEPARATOR . ltrim(str_replace("\\", DIRECTORY_SEPARATOR, $class_name), DIRECTORY_SEPARATOR) . ".php";
-                if(is_file($filename)) {
-                    require_once $filename;
-                    return true;
+        spl_autoload_register( function ( $class_name ) {
+            if ( Strings::position( $class_name, "modules" ) !== false ) {
+                $dirs = [
+                    TEMPLATEPATH,
+                ];
+
+                if ( is_child_theme() ) {
+                    $dirs[] = STYLESHEETPATH;
+                }
+
+                foreach ( $dirs as $dir ) {
+                    $filename = $dir . DIRECTORY_SEPARATOR . ltrim(str_replace("\\", DIRECTORY_SEPARATOR, $class_name), DIRECTORY_SEPARATOR) . ".php";
+
+                    if ( is_file( $filename ) ) {
+                        require_once $filename;
+                        return true;
+                    }
                 }
             }
+
             return false;
-        });
+        } );
     }
 }
