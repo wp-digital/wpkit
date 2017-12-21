@@ -249,7 +249,7 @@ class PostsLoader
             $args = [
                 'fields'                => 'ids',
                 'post_status'           => 'publish',
-                'post_type'             => $post_type,
+                'post_type'             => explode( ',', $post_type ),
                 'posts_per_page'        => $count + $sticky_posts_count,
                 'offset'                => $offset,
                 'ignore_sticky_posts'   => true,
