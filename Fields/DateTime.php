@@ -44,7 +44,7 @@ class DateTime extends AbstractField {
         <script type="text/javascript">
             jQuery(function ($) {
                 wp.wpkit = wp.wpkit || {};
-                wp.wpkit.datepicker = {
+                wp.wpkit.datetimepicker = {
                     init: function () {
                         $('[data-type="datetime"]').each(function () {
                             var $this = $(this),
@@ -58,7 +58,7 @@ class DateTime extends AbstractField {
                         this.init();
                     }
                 };
-                wp.wpkit.datepicker.init();
+                wp.wpkit.datetimepicker.init();
             });
         </script>
 		<?php
