@@ -74,6 +74,10 @@ class Taxonomy
         add_action('init', function() {
             $this->_register_taxonomy();
         }, 6);
+
+        add_action( "after-{$this->_key}-table", function () {
+            $this->_reload_fields();
+        } );
     }
 
 
@@ -296,4 +300,35 @@ class Taxonomy
         $this->_capabilities = (array) $capabilities;
     }
 
+    protected function _reload_fields()
+    {
+        ?>
+        <script>
+            jQuery(function ($) {
+
+                'use strict';
+
+                var fields = <?= json_encode( array_map( function ( TaxonomyField $field ) {
+                    return [
+                        'id'   => '#' . $field->get_field()->get_id(),
+                        'html' => $field->render_new(),
+                        'js'   => $field->get_field()->reload_javascript(),
+                    ];
+                }, array_values( $this->_custom_fields ) ) ) ?>;
+
+                $(document).ajaxComplete(function (event, xhr, settings) {
+                    var js = '';
+
+                    if (settings.data && settings.data.indexOf('action=add-tag') !== -1 && xhr.responseText && xhr.responseText.indexOf('wp_error') === -1 && !_.isEmpty(fields)) {
+                        _.each(fields, function (field) {
+                            $(field.id).closest('.form-field-fixed').replaceWith(field.html);
+                            js += field.js;
+                        });
+                        $(document.body).append(js);
+                    }
+                });
+            });
+        </script>
+        <?php
+    }
 }
