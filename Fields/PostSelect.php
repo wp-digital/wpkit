@@ -109,7 +109,7 @@ class PostSelect extends Select2
 	/**
 	 * @param string $post_type
 	 */
-	public function setPostType( $post_type ) {
+	public function set_post_type( $post_type ) {
 		$this->post_type = $post_type;
 	}
 
