@@ -21,6 +21,7 @@ namespace WPKit\Fields;
  */
 class PostSelect extends Select2
 {
+    private $post_type = 'posts';
     /**
      * Query arguments
      *
@@ -92,14 +93,26 @@ class PostSelect extends Select2
     protected function _render_options()
     {
         $output = $this->get_placeholder() ? '<option value=""></option>' : '';
-        $post_id = $this->get_value();
+        $post_ids = $this->get_value();
 
-        if ( $post_id ) {
-            $output .= "<option selected value=\"$post_id\">" . get_the_title( $post_id ) . "</option>";
+        if ( $post_ids ) {
+            $output .= array_reduce( (array) $post_ids, function ( $options, $post_id ) {
+                $options .= "<option selected value=\"$post_id\">" . get_the_title( $post_id ) . "</option>";
+
+                return $options;
+            } );
         }
 
         return $output;
     }
+
+	/**
+	 * @param string $post_type
+	 */
+	public function set_post_type( $post_type ) {
+		$this->post_type = $post_type;
+	}
+
 
     /**
      * Render JavaScript
@@ -120,7 +133,7 @@ class PostSelect extends Select2
 
                     $field.select2($.extend({
                         ajax: {
-                            url: '<?= esc_url_raw( rest_url( 'wp/v2/posts' ) ) ?>',
+                            url: '<?= esc_url_raw( rest_url( 'wp/v2/' . $this->post_type ) ) ?>',
                             data: function (params) {
                                 var query = $.extend({
                                     search: params.term,
