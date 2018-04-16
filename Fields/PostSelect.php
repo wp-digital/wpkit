@@ -21,6 +21,7 @@ namespace WPKit\Fields;
  */
 class PostSelect extends Select2
 {
+    private $post_type = 'posts';
     /**
      * Query arguments
      *
@@ -105,6 +106,14 @@ class PostSelect extends Select2
         return $output;
     }
 
+	/**
+	 * @param string $post_type
+	 */
+	public function set_post_type( $post_type ) {
+		$this->post_type = $post_type;
+	}
+
+
     /**
      * Render JavaScript
      *
@@ -124,7 +133,7 @@ class PostSelect extends Select2
 
                     $field.select2($.extend({
                         ajax: {
-                            url: '<?= esc_url_raw( rest_url( 'wp/v2/posts' ) ) ?>',
+                            url: '<?= esc_url_raw( rest_url( 'wp/v2/' . $this->post_type ) ) ?>',
                             data: function (params) {
                                 var query = $.extend({
                                     search: params.term,
