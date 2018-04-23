@@ -24,7 +24,7 @@ class Button extends AbstractField {
 
 	public function render_field() {
 		return sprintf(
-			'<span id="spinner" class="spinner"></span><button type="%s" data-action="%s" id="%s" class="wpkit-button %s" %s>%s</button><div class="dashicons-before dashicons-yes" style="display:none;color:#00AA00;float:right;margin-right:-30px"><br></div>%s',
+			'<span class="spinner"></span><button type="%s" data-action="%s" id="%s" class="wpkit-button %s" %s>%s</button><div class="dashicons-before dashicons-yes" style="display:none;color:#00AA00;float:right;margin-right:-30px"><br></div>%s',
 			$this->get_type(),
 			$this->get_action(),
 			$this->get_id(),
@@ -33,6 +33,22 @@ class Button extends AbstractField {
 			$this->get_text(),
 			$this->_get_description()
 		);
+	}
+
+	/**
+	 * Get AJAX action. If not set field name will be used.
+	 *
+	 * @return string
+	 */
+	public function get_action() {
+		return $this->_action ?: $this->get_name();
+	}
+
+	/**
+	 * @param string $action
+	 */
+	public function set_action( $action ) {
+		$this->_action = (string) $action;
 	}
 
 	/**
@@ -51,22 +67,6 @@ class Button extends AbstractField {
 	 */
 	public function set_text( $text ) {
 		$this->_text = esc_html( $text );
-	}
-
-	/**
-	 * Get AJAX action. If not set field name will be used.
-	 *
-	 * @return string
-	 */
-	public function get_action() {
-		return $this->_action ?: $this->get_name();
-	}
-
-	/**
-	 * @param string $action
-	 */
-	public function set_action( $action ) {
-		$this->_action = (string) $action;
 	}
 
 	public function enqueue_javascript() {
@@ -93,11 +93,13 @@ class Button extends AbstractField {
                             alert(error);
                             $button.attr("disabled", false);
                             $spinner.removeClass("is-active");
+                            $('body').trigger('wpkit.button.error', [$button]);
                         },
                         success: function () {
                             $button.attr("disabled", false);
                             $spinner.removeClass("is-active");
                             $success.fadeIn(500);
+                            $('body').trigger('wpkit.button.success', [$button]);
                         }
                     });
                 })
