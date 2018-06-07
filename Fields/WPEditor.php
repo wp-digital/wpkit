@@ -46,6 +46,7 @@ class WPEditor extends Textarea
 
 	    $settings = wp_parse_args( $this->_attributes, $defaults );
 	    wp_editor( $this->get_value(), $this->get_id(), $settings );
+	    echo $this->_get_description();
 
 	    return ob_get_clean();
     }

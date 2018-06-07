@@ -30,9 +30,11 @@ class Taxonomy
     protected $_meta_box_cb = null;
     protected $_show_ui = true;
 	protected $_show_in_nav_menus = true;
+	protected $_show_in_menu = true;
 	protected $_public = true;
     protected $_capabilities = [];
 	protected $_rewrite = [];
+	protected $_show_in_rest = false;
 
     protected $_pluralize = true;
     protected $_custom_labels = [];
@@ -72,6 +74,10 @@ class Taxonomy
         add_action('init', function() {
             $this->_register_taxonomy();
         }, 6);
+
+        add_action( "after-{$this->_key}-table", function () {
+            $this->_reload_fields();
+        } );
     }
 
 
@@ -109,17 +115,18 @@ class Taxonomy
         }
 
 	    register_taxonomy( $this->_key, $this->_post_types, [
-		    'hierarchical'      => $this->_hierarchical,
-		    'labels'            => $this->_get_labels(),
-		    'show_ui'           => $this->_show_ui,
-		    'show_admin_column' => $this->_display_in_table,
-		    'query_var'         => true,
-		    'show_in_nav_menus' => $this->_show_in_nav_menus,
-		    'capabilities'      => $this->_capabilities,
-		    'rewrite'           => $this->get_rewrite(),
-		    'public'            => $this->_public,
-		    'show_in_quick_edit'         => $this->_show_in_quick_edit,
-			'meta_box_cb'                => $this->_meta_box_cb,
+		    'hierarchical'       => $this->_hierarchical,
+		    'labels'             => $this->_get_labels(),
+		    'show_ui'            => $this->_show_ui,
+		    'show_admin_column'  => $this->_display_in_table,
+		    'query_var'          => true,
+		    'show_in_nav_menus'  => $this->_show_in_nav_menus,
+		    'capabilities'       => $this->_capabilities,
+		    'rewrite'            => $this->get_rewrite(),
+		    'public'             => $this->_public,
+		    'show_in_quick_edit' => $this->_show_in_quick_edit,
+			'meta_box_cb'        => $this->_meta_box_cb,
+            'show_in_rest'       => $this->_show_in_rest,
 	    ] );
     }
 
@@ -209,6 +216,16 @@ class Taxonomy
         $this->_show_ui = (bool) $is_show_ui;
     }
 
+    /**
+     * Whether to include the taxonomy in the REST API
+     *
+     * @param bool $is_show_in_rest
+     */
+    public function set_show_in_rest( $is_show_in_rest )
+    {
+        $this->_show_in_rest = (bool) $is_show_in_rest;
+    }
+
 	public function set_public($is_public)
 	{
 		$this->_public = (bool) $is_public;
@@ -223,6 +240,16 @@ class Taxonomy
     {
 	    $this->_show_in_nav_menus = (bool) $is_show_in_nav_menus;
     }
+
+	public function is_show_in_menu()
+	{
+		return $this->_show_in_menu;
+	}
+
+	public function set_show_in_menu($is_show_in_menu)
+	{
+		$this->_show_in_menu = (bool) $is_show_in_menu;
+	}
 
     public function set_display_in_table($is_display)
     {
@@ -273,4 +300,35 @@ class Taxonomy
         $this->_capabilities = (array) $capabilities;
     }
 
+    protected function _reload_fields()
+    {
+        ?>
+        <script>
+            jQuery(function ($) {
+
+                'use strict';
+
+                var fields = <?= json_encode( array_map( function ( TaxonomyField $field ) {
+                    return [
+                        'id'   => '#' . $field->get_field()->get_id(),
+                        'html' => $field->render_new(),
+                        'js'   => $field->get_field()->reload_javascript(),
+                    ];
+                }, array_values( $this->_custom_fields ) ) ) ?>;
+
+                $(document).ajaxComplete(function (event, xhr, settings) {
+                    var js = '';
+
+                    if (settings.data && settings.data.indexOf('action=add-tag') !== -1 && xhr.responseText && xhr.responseText.indexOf('wp_error') === -1 && !_.isEmpty(fields)) {
+                        _.each(fields, function (field) {
+                            $(field.id).closest('.form-field-fixed').replaceWith(field.html);
+                            js += field.js;
+                        });
+                        $(document.body).append(js);
+                    }
+                });
+            });
+        </script>
+        <?php
+    }
 }

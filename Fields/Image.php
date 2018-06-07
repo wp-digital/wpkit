@@ -22,6 +22,7 @@ class Image extends File
     protected $_type = 'image';
     protected $_accepts = ['image'];
     protected $_labels = ['title' => 'Set Image', 'upload_button' => 'Set Image', 'remove_button' => 'Remove Image'];
+    protected $_size = 'thumbnail';
 
     /**
      * Set file types accepts is not allowed
@@ -34,11 +35,27 @@ class Image extends File
         throw new WpException('Image Field can accept only images.');
     }
 
+    /**
+     * @param $size
+     */
+    public function set_size( $size )
+    {
+        $this->_size = $size;
+    }
+
+    /**
+     * @return string
+     */
+    public function get_size()
+    {
+        return $this->_size;
+    }
+
     protected function _render_file()
     {
         if ( $this->_value ) {
             add_filter( 'wp_calculate_image_srcset', '__return_false' );
-            $image = wp_get_attachment_image( $this->_value, 'thumbnail', true );
+            $image = wp_get_attachment_image( $this->_value, $this->_size, true );
             remove_filter( 'wp_calculate_image_srcset', '__return_false' );
 
             return $image . '<strong style="display: none" data-role="title">' . get_the_title( $this->_value ) . '</strong>';
@@ -46,5 +63,4 @@ class Image extends File
             return '<img style="display: none" src="" alt="" /><strong style="display: none" data-role="title"></strong>';
         }
     }
-
 }

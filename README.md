@@ -97,6 +97,17 @@ $loader->phpunit_load_modules();
 More features will come in Wiki or just explore code ;)
 
 ## Release History
+Version 1.7.0
+
+ + New options for OptionPage, Taxonomy
+ + DateTime and PostSelect field added
+ + Api key for google maps field
+ + Unit Testing with [WP_Mock](https://github.com/10up/wp_mock) added
+ * Fix ssl assets load
+ * Fix for using WPKit in child themes
+ * Select2 updated to 4.0.3 version
+ * Placeholder fix for Select2
+ * Fix problem with several Select2 on page
 
 Version 1.6.3
 

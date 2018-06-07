@@ -82,7 +82,7 @@ class MetaBoxRepeatable extends MetaBox
 
     protected function _render_row($index, $post)
     {
-        $class = $index % 2 == 0 ? ' class="alternate"' : '';
+	    $class = ( (int) $index ) % 2 == 0 ? ' class="alternate"' : '';
         $html = "<tr{$class} data-index=\"{$index}\">";
         $html .= '<th class="plugins drag-handle" scope="row"><i class="dashicons dashicons-menu"></i></th>';
         foreach($this->_get_fields() as $field) {
@@ -164,7 +164,7 @@ class MetaBoxRepeatable extends MetaBox
                     var rows_count = $table.find('tbody tr').size();
                     var limit = parseInt( jQuery(this).data('limit') );
                     if( limit == 0 || limit > rows_count ) {
-                        $table.find('tbody').append(html.replace(/__i__/g, rows_count));
+                        $table.find('tbody:first').append(html.replace(/__i__/g, rows_count));
                         refreshGrid();
                         jQuery(document).trigger('repeatable_row_added', $table.find('tbody tr:last'), rows_count);
                     }
