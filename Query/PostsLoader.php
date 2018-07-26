@@ -240,6 +240,7 @@ class PostsLoader
         $posts_ids_per_type = [];
 
         $sticky_posts_count = count( $sticky_posts );
+        $sticky_post_types_count = 0;
 
         // extra post types
         foreach( $count_per_sticky_post_type as $post_type => $count ) {
@@ -250,7 +251,7 @@ class PostsLoader
                 'fields'                => 'ids',
                 'post_status'           => 'publish',
                 'post_type'             => explode( ',', $post_type ),
-                'posts_per_page'        => $count + $sticky_posts_count,
+                'posts_per_page'        => $count + $sticky_posts_count + $sticky_post_types_count,
                 'offset'                => $offset,
                 'ignore_sticky_posts'   => true,
                 'no_found_rows'         => true,
@@ -258,7 +259,11 @@ class PostsLoader
             ];
 
             $ids = get_posts( $args );
-            $posts_ids_per_type[ $post_type ] = array_slice( $this->_array_diff( $ids, $sticky_posts ), 0, $count ); // faster than post__not_in
+            $posts_ids_per_type[ $post_type ] = $this->_array_diff( $ids, array_reduce( $posts_ids_per_type, function ( $ids, $ids_per_type ) {
+                return array_merge( $ids, $ids_per_type );
+            }, [] ) ); // faster than post__not_in
+            $posts_ids_per_type[ $post_type ] = array_slice( $this->_array_diff( $posts_ids_per_type[ $post_type ], $sticky_posts ), 0, $count ); // faster than post__not_in
+            $sticky_post_types_count += count( $posts_ids_per_type[ $post_type ] );
         }
 
         // default post types
@@ -266,7 +271,7 @@ class PostsLoader
             'fields'                => 'ids',
             'post_status'           => 'publish',
             'post_type'             => $this->_post_types,
-            'posts_per_page'        => $count_of_default_post_type + $sticky_posts_count,
+            'posts_per_page'        => $count_of_default_post_type + $sticky_posts_count + $sticky_post_types_count,
             'offset'                => $offset_of_default_post_type,
             'ignore_sticky_posts'   => true,
             'no_found_rows'         => true,
@@ -274,7 +279,10 @@ class PostsLoader
         ];
 
         $ids = get_posts( $args );
-        $posts_ids_per_type['__default'] = array_slice( $this->_array_diff( $ids, $sticky_posts ), 0, $count_of_default_post_type ); // faster than post__not_in
+        $posts_ids_per_type['__default'] = $this->_array_diff( $ids, array_reduce( $posts_ids_per_type, function ( $ids, $ids_per_type ) {
+            return array_merge( $ids, $ids_per_type );
+        }, [] ) );
+        $posts_ids_per_type['__default'] = array_slice( $this->_array_diff( $posts_ids_per_type['__default'], $sticky_posts ), 0, $count_of_default_post_type ); // faster than post__not_in
 
         // paranoid
         foreach( $posts_ids_per_type as $key => $_ ) {
