@@ -133,6 +133,23 @@ class PostsLoader
 
         $query = new WP_Query( $args );
 
+        // Allow post duplicates
+        if ( count( $ordered_ids ) > count( $query->posts ) ) {
+            $posts_by_ids = array_reduce( $query->posts, function ( $posts, $post ) {
+                $posts[ $post->ID ] = $post;
+
+                return $posts;
+            }, [] );
+            $posts = [];
+
+            foreach ( $ordered_ids as $id ) {
+                $posts[] = $posts_by_ids[ $id ];
+            }
+
+            $query->posts = $posts;
+            $query->post_count = count( $posts );
+        }
+
         if( 0 < count( $posts_not_found ) ) {
             // create empty objects for not found posts
 
