@@ -37,9 +37,9 @@ class Image extends File
     protected function _render_file()
     {
         if ( $this->_value ) {
-            add_filter( 'wp_calculate_image_srcset', '__return_false' );
+            add_filter( 'wp_calculate_image_srcset', '__return_empty_array' );
             $image = wp_get_attachment_image( $this->_value, 'thumbnail', true );
-            remove_filter( 'wp_calculate_image_srcset', '__return_false' );
+            remove_filter( 'wp_calculate_image_srcset', '__return_empty_array' );
 
             return $image . '<strong style="display: none" data-role="title">' . get_the_title( $this->_value ) . '</strong>';
         } else {
