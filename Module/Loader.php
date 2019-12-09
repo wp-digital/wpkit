@@ -31,14 +31,15 @@ class Loader
     /**
      * Load all theme modules
      *
-     * @param array $modules list of modules
+     * @param array  $modules list of modules
+     * @param string $path
      * @throws \WPKit\Exception\WpException
      */
-    public function load_modules(array $modules = null)
+    public function load_modules(array $modules = null, $path = TEMPLATEPATH)
     {
         $this->_init_module_autoloader();
 
-        $dir = STYLESHEETPATH . DIRECTORY_SEPARATOR . "modules";
+        $dir = $path . DIRECTORY_SEPARATOR . "modules";
 
         // load all modules from directory
         if($modules === null) {
