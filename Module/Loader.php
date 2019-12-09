@@ -31,45 +31,36 @@ class Loader
     /**
      * Load all theme modules
      *
-     * @param array $modules list of modules
+     * @param array  $modules list of modules
+     * @param string $path
      * @throws \WPKit\Exception\WpException
      */
-    public function load_modules(array $modules = null)
+    public function load_modules(array $modules = null, $path = TEMPLATEPATH)
     {
         $this->_init_module_autoloader();
-        $dirs = [
-            TEMPLATEPATH,
-        ];
+        $dir = $path . DIRECTORY_SEPARATOR . "modules";
 
-        if ( is_child_theme() ) {
-            $dirs[] = STYLESHEETPATH;
+        // load all modules from directory
+        if($modules === null) {
+
+            if( ! is_dir($dir) ) {
+                throw new WpException("Invalid modules directory: $dir");
+            }
+
+            foreach (new \DirectoryIterator($dir) as $file) {
+                if ($file->isDir() && !$file->isDot()) {
+                    $this->_load_module($dir, $file->getFilename());
+                }
+            }
+
         }
+        // load modules from list
+        else {
 
-        foreach ( $dirs as $dir ) {
-            $dir .= DIRECTORY_SEPARATOR . "modules";
-
-            // load all modules from directory
-            if($modules === null) {
-
-                if( ! is_dir($dir) ) {
-                    throw new WpException("Invalid modules directory: $dir");
-                }
-
-                foreach (new \DirectoryIterator($dir) as $file) {
-                    if ($file->isDir() && !$file->isDot()) {
-                        $this->_load_module($dir, $file->getFilename());
-                    }
-                }
-
+            foreach($modules as $module) {
+                $this->_load_module($dir, $module);
             }
-            // load modules from list
-            else {
 
-                foreach($modules as $module) {
-                    $this->_load_module($dir, $module);
-                }
-
-            }
         }
     }
 
