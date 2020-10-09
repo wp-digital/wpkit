@@ -193,7 +193,6 @@ class PostsLoader
                 'orderby'               => 'none',
                 'ignore_sticky_posts'   => true,
                 'no_found_rows'         => true,
-                'has_password'          => false,
                 'post__in'              => $sticky_posts,
             ];
             $sticky_posts = get_posts( $args );
@@ -272,7 +271,6 @@ class PostsLoader
                 'offset'                => $offset,
                 'ignore_sticky_posts'   => true,
                 'no_found_rows'         => true,
-                'has_password'          => false,
             ];
 
             $ids = get_posts( $args );
@@ -292,7 +290,6 @@ class PostsLoader
             'offset'                => $offset_of_default_post_type,
             'ignore_sticky_posts'   => true,
             'no_found_rows'         => true,
-            'has_password'          => false,
         ];
 
         $ids = get_posts( $args );
