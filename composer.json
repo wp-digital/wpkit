@@ -1,7 +1,7 @@
 {
-    "name": "redink-no/wpkit",
-    "description": "Object-oriented development framework for WordPress",
-    "version": "1.7.0",
+    "name": "innocode-digital/wpkit",
+    "description": "Object-oriented development framework for WordPress.",
+    "version": "1.8.0",
     "license": "GPL-2.0+",
     "keywords": ["wordpress", "wpkit"],
     "authors": [
@@ -22,6 +22,8 @@
         "php": ">=5.4.0"
     },
     "autoload": {
-        "psr-4": {"WPKit\\": ""}
+        "psr-4": {
+            "WPKit\\": ""
+        }
     }
 }

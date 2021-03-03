@@ -1,2 +1,23 @@
-.idea/
+# Lock file because it's a plugin
+composer.lock
+
+# Dependency directories
+node_modules/
+vendor/
+
+# dotenv environment variables file
+.env
+
+# Logs
+logs
+*.log
+
+# Cache
+.cache
+
+# macOS
 .DS_Store
+
+# IDE
+.idea/
+.vscode/

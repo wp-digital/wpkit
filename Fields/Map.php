@@ -321,7 +321,8 @@ class Map extends AbstractField {
 				};
 
 				jQuery(function () {
-					jQuery(document).on('ready repeatable_row_added', InitMap);
+                    InitMap();
+					jQuery(document).on('repeatable_row_added', InitMap);
 				});
 
 			})();
