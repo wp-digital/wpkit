@@ -50,7 +50,7 @@ class Video extends AbstractField {
 	public function render_field()
 	{
 		if($this->get_value()){
-			require_once( ABSPATH . WPINC . '/class-oembed.php' );
+			require_once( ABSPATH . WPINC . '/class-wp-oembed.php' );
 			/* @var \WP_oEmbed $oembed */
 			$oembed = _wp_oembed_get_object();
 			$provider = $oembed->get_provider( $this->get_value() );
